@@ -15,25 +15,25 @@ namespace QPEcs
 
 			void DestroyEntity(Entity aEntity);
 
-			template <typename Component>
+			template <class Component>
 			void RegisterComponent();
 
-			template <typename Component>
+			template <class Component>
 			void AddComponent(Entity aEntity, Component aComponent);
 
-			template <typename Component>
+			template <class Component>
 			void RemoveComponent(Entity aEntity);
 
-			template <typename Component>
+			template <class Component>
 			Component& GetComponent(Entity aEntity);
 
-			template <typename Component>
+			template <class Component>
 			ComponentType GetComponentType();
 
-			template <typename System>
+			template <class System>
 			std::shared_ptr<System> RegisterSystem();
 
-			template <typename System>
+			template <class System>
 			void SetSystemSignature(Signature aSignature);
 
 		private:
@@ -42,43 +42,43 @@ namespace QPEcs
 			std::unique_ptr<SystemManager> mySystemManager;
 	};
 
-	template <typename Component>
+	template <class Component>
 	void EntityComponentSystem::RegisterComponent()
 	{
 		myComponentManager->RegisterComponent<Component>();
 	}
 
-	template <typename Component>
+	template <class Component>
 	void EntityComponentSystem::AddComponent(Entity aEntity, Component aComponent)
 	{
 		myComponentManager->AddComponent(aEntity, aComponent);
 	}
 
-	template <typename Component>
+	template <class Component>
 	void EntityComponentSystem::RemoveComponent(Entity aEntity)
 	{
 		myComponentManager->RemoveComponent<Component>(aEntity);
 	}
 
-	template <typename Component>
+	template <class Component>
 	Component& EntityComponentSystem::GetComponent(Entity aEntity)
 	{
 		return myComponentManager->GetComponent<Component>(aEntity);
 	}
 
-	template <typename Component>
+	template <class Component>
 	ComponentType EntityComponentSystem::GetComponentType()
 	{
 		return myComponentManager->GetComponentType<Component>();
 	}
 
-	template <typename System>
+	template <class System>
 	std::shared_ptr<System> EntityComponentSystem::RegisterSystem()
 	{
 		return mySystemManager->RegisterSystem<System>();
 	}
 
-	template <typename System>
+	template <class System>
 	void EntityComponentSystem::SetSystemSignature(Signature aSignature)
 	{
 		mySystemManager->SetSignature<System>(aSignature);
