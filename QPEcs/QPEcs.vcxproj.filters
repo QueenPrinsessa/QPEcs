@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="QPEcs">
+      <UniqueIdentifier>{01D2E50D-6DE6-0DBF-3668-B11EA23B0AF0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="QPEcs\Common">
+      <UniqueIdentifier>{1974788D-05D7-0732-AE5C-40E89A9ED3B4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\QPEcs.h" />
+    <ClInclude Include="Source\qpecspch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\qpecspch.cpp" />
+  </ItemGroup>
+</Project>
