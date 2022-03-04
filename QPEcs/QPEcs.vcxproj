@@ -73,8 +73,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>qpecspch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;QPE_PLATFORM_WINDOWS;QPE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -92,8 +91,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>qpecspch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;QPE_PLATFORM_WINDOWS;QPE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -115,8 +113,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>qpecspch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;QPE_PLATFORM_WINDOWS;QPE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -138,19 +135,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Source\QPEcs.h" />
-    <ClInclude Include="Source\qpecspch.h" />
-    <ClInclude Include="Source\QPEcs\Common\DynamicArray.hpp" />
-    <ClInclude Include="Source\QPEcs\Entity.hpp" />
-    <ClInclude Include="Source\QPEcs\Registry.hpp" />
+    <ClInclude Include="Source\QPEcs\Component.h" />
+    <ClInclude Include="Source\QPEcs\ComponentManager.hpp" />
+    <ClInclude Include="Source\QPEcs\ComponentRegistry.hpp" />
+    <ClInclude Include="Source\QPEcs\ComponentRegistryBase.h" />
+    <ClInclude Include="Source\QPEcs\Entity.h" />
+    <ClInclude Include="Source\QPEcs\EntityComponentSystem.h" />
+    <ClInclude Include="Source\QPEcs\EntityManager.hpp" />
+    <ClInclude Include="Source\QPEcs\SystemBase.h" />
+    <ClInclude Include="Source\QPEcs\SystemManager.hpp" />
     <ClInclude Include="Source\QPEcs\Types.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Source\qpecspch.cpp">
-      <ExternalWarningLevel>Level3</ExternalWarningLevel>
-      <ExternalWarningLevel>Level3</ExternalWarningLevel>
-      <ExternalWarningLevel>Level3</ExternalWarningLevel>
-      <PrecompiledHeader>Create</PrecompiledHeader>
-    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
