@@ -6,6 +6,7 @@ namespace QPEcs
 	class SystemBase
 	{
 		friend class SystemManager;
-		std::set<Entity> myEntities;
+		protected:
+			std::set<Entity> myEntities;
 	};
 }
