@@ -134,7 +134,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Source\QPEcs.h" />
+    <ClInclude Include="Source\QPEcs.hpp" />
     <ClInclude Include="Source\QPEcs\Component.h" />
     <ClInclude Include="Source\QPEcs\ComponentManager.hpp" />
     <ClInclude Include="Source\QPEcs\ComponentRegistry.hpp" />
