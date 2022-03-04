@@ -139,10 +139,6 @@
   <ItemGroup>
     <ClInclude Include="Source\QPEcs.h" />
     <ClInclude Include="Source\qpecspch.h" />
-    <ClInclude Include="Source\QPEcs\Common\DynamicArray.hpp" />
-    <ClInclude Include="Source\QPEcs\Entity.hpp" />
-    <ClInclude Include="Source\QPEcs\Registry.hpp" />
-    <ClInclude Include="Source\QPEcs\Types.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\qpecspch.cpp">
