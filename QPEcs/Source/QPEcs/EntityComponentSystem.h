@@ -31,7 +31,7 @@ namespace QPEcs
 			ComponentType GetComponentType();
 
 			template <typename System>
-			void RegisterSystem();
+			std::shared_ptr<System> RegisterSystem();
 
 			template <typename System>
 			void SetSystemSignature(Signature aSignature);
@@ -73,9 +73,9 @@ namespace QPEcs
 	}
 
 	template <typename System>
-	void EntityComponentSystem::RegisterSystem()
+	std::shared_ptr<System> EntityComponentSystem::RegisterSystem()
 	{
-		mySystemManager->RegisterSystem<System>();
+		return mySystemManager->RegisterSystem<System>();
 	}
 
 	template <typename System>
