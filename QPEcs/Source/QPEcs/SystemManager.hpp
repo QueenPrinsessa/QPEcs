@@ -59,6 +59,7 @@ namespace QPEcs
 	template <class System>
 	std::shared_ptr<System> SystemManager::RegisterSystem()
 	{
+		static_assert(std::is_base_of_v<SystemBase, System>, "Systems need to inherit from QPEcs::SystemBase");
 		assert(!mySystems.contains(GetTypeName<System>()) && "System has already been registered!");
 
 		mySystems[GetTypeName<System>()] = std::make_shared<System>();
@@ -68,6 +69,7 @@ namespace QPEcs
 	template <class System>
 	void SystemManager::SetSignature(Signature aSignature)
 	{
+		static_assert(std::is_base_of_v<SystemBase, System>, "Systems need to inherit from QPEcs::SystemBase");
 		assert(mySystems.contains(GetTypeName<System>()) && "System needs to be registered before use!");
 
 		mySignatures[GetTypeName<System>()] = aSignature;
@@ -76,6 +78,7 @@ namespace QPEcs
 	template <class System>
 	SystemManager::TypeName SystemManager::GetTypeName()
 	{
+		static_assert(std::is_base_of_v<SystemBase, System>, "Systems need to inherit from QPEcs::SystemBase");
 		return typeid(System).name();
 	}
 }
