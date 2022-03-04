@@ -8,9 +8,6 @@ staticruntime "On"
 targetdir ("../Bin/" .. outputdir .. "/%{prj.name}")
 objdir ("../Temp/" .. outputdir .. "/%{prj.name}")
 
-pchheader "qpecspch.h"
-pchsource "Source/qpecspch.cpp"
-
 files
 {
     "Source/**.h",

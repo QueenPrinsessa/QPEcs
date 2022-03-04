@@ -4,15 +4,38 @@
     <Filter Include="QPEcs">
       <UniqueIdentifier>{01D2E50D-6DE6-0DBF-3668-B11EA23B0AF0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="QPEcs\Common">
-      <UniqueIdentifier>{1974788D-05D7-0732-AE5C-40E89A9ED3B4}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\QPEcs.h" />
-    <ClInclude Include="Source\qpecspch.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Source\qpecspch.cpp" />
+    <ClInclude Include="Source\QPEcs\Component.h">
+      <Filter>QPEcs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\QPEcs\ComponentManager.hpp">
+      <Filter>QPEcs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\QPEcs\ComponentRegistry.hpp">
+      <Filter>QPEcs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\QPEcs\ComponentRegistryBase.h">
+      <Filter>QPEcs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\QPEcs\Entity.h">
+      <Filter>QPEcs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\QPEcs\EntityComponentSystem.h">
+      <Filter>QPEcs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\QPEcs\EntityManager.hpp">
+      <Filter>QPEcs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\QPEcs\SystemBase.h">
+      <Filter>QPEcs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\QPEcs\SystemManager.hpp">
+      <Filter>QPEcs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\QPEcs\Types.h">
+      <Filter>QPEcs</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
