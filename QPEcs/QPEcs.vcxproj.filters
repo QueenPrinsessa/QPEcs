@@ -22,7 +22,7 @@
     <ClInclude Include="Source\QPEcs\Entity.h">
       <Filter>QPEcs</Filter>
     </ClInclude>
-    <ClInclude Include="Source\QPEcs\EntityComponentSystem.h">
+    <ClInclude Include="Source\QPEcs\EntityComponentSystem.hpp">
       <Filter>QPEcs</Filter>
     </ClInclude>
     <ClInclude Include="Source\QPEcs\EntityManager.hpp">

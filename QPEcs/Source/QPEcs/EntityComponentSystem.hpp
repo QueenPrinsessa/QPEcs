@@ -11,33 +11,33 @@ namespace QPEcs
 			EntityComponentSystem();
 			~EntityComponentSystem() = default;
 
-			Entity CreateEntity();
+			inline Entity CreateEntity();
 
-			void DestroyEntity(Entity aEntity);
-
-			template <class Component>
-			void RegisterComponent();
+			inline void DestroyEntity(Entity aEntity);
 
 			template <class Component>
-			void AddComponent(Entity aEntity, Component aComponent);
+			inline void RegisterComponent();
 
 			template <class Component>
-			void RemoveComponent(Entity aEntity);
+			inline void AddComponent(Entity aEntity, Component aComponent);
 
 			template <class Component>
-			Component& GetComponent(Entity aEntity);
+			inline void RemoveComponent(Entity aEntity);
 
 			template <class Component>
-			ComponentType GetComponentType();
+			inline Component& GetComponent(Entity aEntity);
+
+			template <class Component>
+			inline ComponentType GetComponentType();
 
 			template <class System>
-			void RegisterSystem();
+			inline void RegisterSystem();
 
 			template <class System>
-			void SetSystemSignature(Signature aSignature);
+			inline void SetSystemSignature(Signature aSignature);
 
 			template <class System>
-			std::shared_ptr<System> GetSystem();
+			inline std::shared_ptr<System> GetSystem();
 
 		private:
 			std::unique_ptr<EntityManager> myEntityManager;
@@ -46,13 +46,13 @@ namespace QPEcs
 	};
 
 	template <class Component>
-	void EntityComponentSystem::RegisterComponent()
+	inline void EntityComponentSystem::RegisterComponent()
 	{
 		myComponentManager->RegisterComponent<Component>();
 	}
 
 	template <class Component>
-	void EntityComponentSystem::AddComponent(Entity aEntity, Component aComponent)
+	inline void EntityComponentSystem::AddComponent(Entity aEntity, Component aComponent)
 	{
 		myComponentManager->AddComponent(aEntity, aComponent);
 
@@ -64,7 +64,7 @@ namespace QPEcs
 	}
 
 	template <class Component>
-	void EntityComponentSystem::RemoveComponent(Entity aEntity)
+	inline void EntityComponentSystem::RemoveComponent(Entity aEntity)
 	{
 		myComponentManager->RemoveComponent<Component>(aEntity);
 
@@ -76,31 +76,31 @@ namespace QPEcs
 	}
 
 	template <class Component>
-	Component& EntityComponentSystem::GetComponent(Entity aEntity)
+	inline Component& EntityComponentSystem::GetComponent(Entity aEntity)
 	{
 		return myComponentManager->GetComponent<Component>(aEntity);
 	}
 
 	template <class Component>
-	ComponentType EntityComponentSystem::GetComponentType()
+	inline ComponentType EntityComponentSystem::GetComponentType()
 	{
 		return myComponentManager->GetComponentType<Component>();
 	}
 
 	template <class System>
-	void EntityComponentSystem::RegisterSystem()
+	inline void EntityComponentSystem::RegisterSystem()
 	{
-		mySystemManager->RegisterSystem<System>();
+		mySystemManager->RegisterSystem<System>(this);
 	}
 
 	template <class System>
-	void EntityComponentSystem::SetSystemSignature(Signature aSignature)
+	inline void EntityComponentSystem::SetSystemSignature(Signature aSignature)
 	{
 		mySystemManager->SetSignature<System>(aSignature);
 	}
 
 	template <class System>
-	std::shared_ptr<System> EntityComponentSystem::GetSystem()
+	inline std::shared_ptr<System> EntityComponentSystem::GetSystem()
 	{
 		return mySystemManager->GetSystem<System>();
 	}
