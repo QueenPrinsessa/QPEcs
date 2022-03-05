@@ -13,7 +13,7 @@ namespace QPEcs
 		using TypeName = const char*;
 		public:
 		template <class System>
-		std::shared_ptr<System> RegisterSystem();
+		void RegisterSystem();
 
 		template <class System>
 		void SetSignature(Signature aSignature);
@@ -59,13 +59,12 @@ namespace QPEcs
 	}
 
 	template <class System>
-	std::shared_ptr<System> SystemManager::RegisterSystem()
+	void SystemManager::RegisterSystem()
 	{
 		static_assert(std::is_base_of_v<SystemBase, System>, "Systems need to inherit from QPEcs::SystemBase");
 		assert(!mySystems.contains(GetTypeName<System>()) && "System has already been registered!");
 
 		mySystems[GetTypeName<System>()] = std::make_shared<System>();
-		return std::static_pointer_cast<System>(mySystems[GetTypeName<System>()]);
 	}
 
 	template <class System>
