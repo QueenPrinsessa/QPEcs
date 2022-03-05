@@ -52,12 +52,24 @@ namespace QPEcs
 	void EntityComponentSystem::AddComponent(Entity aEntity, Component aComponent)
 	{
 		myComponentManager->AddComponent(aEntity, aComponent);
+
+		auto signature = myEntityManager->GetSignature(aEntity);
+		signature.set(myComponentManager->GetComponentType<Component>());
+		myEntityManager->SetSignature(aEntity, signature);
+
+		mySystemManager->OnEntitySignatureChanged(aEntity, signature);
 	}
 
 	template <class Component>
 	void EntityComponentSystem::RemoveComponent(Entity aEntity)
 	{
 		myComponentManager->RemoveComponent<Component>(aEntity);
+
+		auto signature = myEntityManager->GetSignature(aEntity);
+		signature.reset(myComponentManager->GetComponentType<Component>());
+		myEntityManager->SetSignature(aEntity, signature);
+
+		mySystemManager->OnEntitySignatureChanged(aEntity, signature);
 	}
 
 	template <class Component>
