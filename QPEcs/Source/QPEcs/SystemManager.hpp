@@ -63,7 +63,7 @@ namespace QPEcs
 		assert(!mySystems.contains(GetTypeName<System>()) && "System has already been registered!");
 
 		mySystems[GetTypeName<System>()] = std::make_shared<System>();
-		return mySystems[GetTypeName<System>()];
+		return std::static_pointer_cast<System>(mySystems[GetTypeName<System>()]);
 	}
 
 	template <class System>
