@@ -1,3 +1,3 @@
 #pragma once
 
-#include "QPEcs/EntityComponentSystem.h"
+#include "QPEcs/EntityComponentSystem.hpp"
