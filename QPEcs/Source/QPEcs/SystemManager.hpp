@@ -6,31 +6,31 @@
 #include <memory>
 #include <unordered_map>
 
+class EntityComponentSystem;
 namespace QPEcs
 {
 	class SystemManager
 	{
 		using TypeName = const char*;
 		public:
-		template <class System>
-		void RegisterSystem();
+			template <class System>
+			inline void RegisterSystem(EntityComponentSystem* aECS);
 
-		template <class System>
-		void SetSignature(Signature aSignature);
+			template <class System>
+			inline void SetSignature(Signature aSignature);
 
-		void OnEntityDestroyed(Entity aEntity);
+			inline void OnEntityDestroyed(Entity aEntity);
 
-		void OnEntitySignatureChanged(Entity aEntity, Signature aEntitySignature);
+			inline void OnEntitySignatureChanged(Entity aEntity, Signature aEntitySignature);
 
-		template <class System>
-		std::shared_ptr<System> GetSystem();
+			template <class System>
+			inline std::shared_ptr<System> GetSystem();
 		private:
-
 			std::unordered_map<TypeName, Signature> mySignatures {};
 			std::unordered_map<TypeName, std::shared_ptr<SystemBase>> mySystems {};
 
 			template <class System>
-			TypeName GetTypeName();
+			inline TypeName GetTypeName();
 	};
 
 	inline void SystemManager::OnEntityDestroyed(Entity aEntity)
@@ -47,7 +47,7 @@ namespace QPEcs
 		{
 			auto const& systemSignature = mySignatures[typeName];
 
-			if((aEntitySignature & systemSignature) == systemSignature)
+			if ((aEntitySignature & systemSignature) == systemSignature)
 			{
 				system->myEntities.insert(aEntity);
 			}
@@ -59,16 +59,17 @@ namespace QPEcs
 	}
 
 	template <class System>
-	void SystemManager::RegisterSystem()
+	inline void SystemManager::RegisterSystem(EntityComponentSystem* aECS)
 	{
 		static_assert(std::is_base_of_v<SystemBase, System>, "Systems need to inherit from QPEcs::SystemBase");
 		assert(!mySystems.contains(GetTypeName<System>()) && "System has already been registered!");
 
 		mySystems[GetTypeName<System>()] = std::make_shared<System>();
+		mySystems[GetTypeName<System>()]->myECS = aECS;
 	}
 
 	template <class System>
-	void SystemManager::SetSignature(Signature aSignature)
+	inline void SystemManager::SetSignature(Signature aSignature)
 	{
 		static_assert(std::is_base_of_v<SystemBase, System>, "Systems need to inherit from QPEcs::SystemBase");
 		assert(mySystems.contains(GetTypeName<System>()) && "System needs to be registered before use!");
@@ -77,7 +78,7 @@ namespace QPEcs
 	}
 
 	template <class System>
-	std::shared_ptr<System> SystemManager::GetSystem()
+	inline std::shared_ptr<System> SystemManager::GetSystem()
 	{
 		static_assert(std::is_base_of_v<SystemBase, System>, "Systems need to inherit from QPEcs::SystemBase");
 		assert(mySystems.contains(GetTypeName<System>()) && "System needs to be registered before use!");
@@ -85,7 +86,7 @@ namespace QPEcs
 	}
 
 	template <class System>
-	SystemManager::TypeName SystemManager::GetTypeName()
+	inline SystemManager::TypeName SystemManager::GetTypeName()
 	{
 		static_assert(std::is_base_of_v<SystemBase, System>, "Systems need to inherit from QPEcs::SystemBase");
 		return typeid(System).name();
