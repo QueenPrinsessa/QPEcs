@@ -22,6 +22,8 @@ namespace QPEcs
 
 		void OnEntitySignatureChanged(Entity aEntity, Signature aEntitySignature);
 
+		template <class System>
+		std::shared_ptr<System> GetSystem();
 		private:
 
 			std::unordered_map<TypeName, Signature> mySignatures {};
@@ -73,6 +75,14 @@ namespace QPEcs
 		assert(mySystems.contains(GetTypeName<System>()) && "System needs to be registered before use!");
 
 		mySignatures[GetTypeName<System>()] = aSignature;
+	}
+
+	template <class System>
+	std::shared_ptr<System> SystemManager::GetSystem()
+	{
+		static_assert(std::is_base_of_v<SystemBase, System>, "Systems need to inherit from QPEcs::SystemBase");
+		assert(mySystems.contains(GetTypeName<System>()) && "System needs to be registered before use!");
+		return std::static_pointer_cast<System>(mySystems[GetTypeName<System>()]);
 	}
 
 	template <class System>

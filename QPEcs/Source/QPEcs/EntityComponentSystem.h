@@ -36,6 +36,9 @@ namespace QPEcs
 			template <class System>
 			void SetSystemSignature(Signature aSignature);
 
+			template <class System>
+			std::shared_ptr<System> GetSystem();
+
 		private:
 			std::unique_ptr<EntityManager> myEntityManager;
 			std::unique_ptr<ComponentManager> myComponentManager;
@@ -94,6 +97,12 @@ namespace QPEcs
 	void EntityComponentSystem::SetSystemSignature(Signature aSignature)
 	{
 		mySystemManager->SetSignature<System>(aSignature);
+	}
+
+	template <class System>
+	std::shared_ptr<System> EntityComponentSystem::GetSystem()
+	{
+		return mySystemManager->GetSystem<System>();
 	}
 
 	inline EntityComponentSystem::EntityComponentSystem()
