@@ -25,6 +25,7 @@ namespace QPEcs
 		private:
 			std::queue<Entity> myAvailableEntities {};
 			std::array<Signature, MaxEntities> mySignatures {};
+			std::bitset<MaxEntities> myExistingEntities;
 			UInt32 myEntitiesCount {};
 			
 	};
@@ -45,6 +46,8 @@ namespace QPEcs
 		Entity entity = myAvailableEntities.front();
 		myAvailableEntities.pop();
 
+		myExistingEntities.set(entity);
+
 		myEntitiesCount++;
 
 		return entity;
@@ -54,6 +57,7 @@ namespace QPEcs
 	{
 		assert(aEntity < MaxEntities && "Attempting to destroy entity out of range!");
 
+		myExistingEntities.reset(aEntity);
 		mySignatures[aEntity].reset();
 		myAvailableEntities.push(aEntity);
 
