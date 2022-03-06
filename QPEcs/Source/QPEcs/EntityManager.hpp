@@ -32,7 +32,7 @@ namespace QPEcs
 
 	inline EntityManager::EntityManager()
 	{
-		for (EntityType entity = 1; entity < MaxEntities; entity++)
+		for (EntityType entity = 0; entity < MaxEntities; entity++)
 		{
 			myAvailableEntities.emplace(entity);
 		}
