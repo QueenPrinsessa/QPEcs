@@ -16,7 +16,7 @@ namespace QPEcs
 			inline void DestroyEntity(Entity aEntity);
 
 			template <class Component>
-			bool HasComponent(Entity aEntity);
+			inline bool HasComponent(Entity aEntity);
 
 			template <class Component>
 			inline void RegisterComponent();
@@ -59,7 +59,7 @@ namespace QPEcs
 	};
 
 	template <class Component>
-	bool EntityComponentSystem::HasComponent(Entity aEntity)
+	inline bool EntityComponentSystem::HasComponent(Entity aEntity)
 	{
 		Signature componentSignature;
 		componentSignature.set(myComponentManager->GetComponentType<Component>());
@@ -85,7 +85,7 @@ namespace QPEcs
 	}
 
 	template <class Component>
-	void EntityComponentSystem::AddAndRegisterComponent(Entity aEntity, Component aComponent)
+	inline void EntityComponentSystem::AddAndRegisterComponent(Entity aEntity, Component aComponent)
 	{
 		myComponentManager->AddAndRegisterComponent(aEntity, aComponent);
 
@@ -115,7 +115,7 @@ namespace QPEcs
 	}
 
 	template <class Component>
-	Component& EntityComponentSystem::GetOrAddComponent(Entity aEntity)
+	inline Component& EntityComponentSystem::GetOrAddComponent(Entity aEntity)
 	{
 		auto signature = myEntityManager->GetSignature(aEntity);
 		Component& component = myComponentManager->GetOrAddComponent<Component>();
@@ -178,7 +178,9 @@ namespace QPEcs
 
 	inline Entity EntityComponentSystem::CreateEntity()
 	{
-		return myEntityManager->CreateEntity();
+		Entity entity = myEntityManager->CreateEntity();
+		entity.myECS = this;
+		return entity;
 	}
 
 	inline void EntityComponentSystem::DestroyEntity(Entity aEntity)

@@ -1,6 +1,6 @@
 #pragma once
 #include "Component.h"
-#include "Entity.h"
+#include "Entity.hpp"
 #include "SystemBase.h"
 #include <cassert>
 #include <memory>
