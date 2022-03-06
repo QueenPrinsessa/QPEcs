@@ -1,4 +1,5 @@
 #pragma once
+
 #include "EntityManager.hpp"
 #include "ComponentManager.hpp"
 #include "SystemManager.hpp"
@@ -178,9 +179,7 @@ namespace QPEcs
 
 	inline Entity EntityComponentSystem::CreateEntity()
 	{
-		Entity entity = myEntityManager->CreateEntity();
-		entity.myECS = this;
-		return entity;
+		return  myEntityManager->CreateEntity();
 	}
 
 	inline void EntityComponentSystem::DestroyEntity(Entity aEntity)
