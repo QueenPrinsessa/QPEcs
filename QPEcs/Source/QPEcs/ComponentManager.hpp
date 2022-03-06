@@ -1,5 +1,5 @@
 #pragma once
-#include "Entity.h"
+#include "Entity.hpp"
 #include "Types.h"
 #include "ComponentRegistry.hpp"
 #include <memory>

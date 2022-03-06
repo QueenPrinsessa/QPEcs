@@ -1,5 +1,5 @@
 #pragma once
-#include "Entity.h"
+#include "Entity.hpp"
 #include "Component.h"
 #include <queue>
 #include <array>
@@ -32,9 +32,9 @@ namespace QPEcs
 
 	inline EntityManager::EntityManager()
 	{
-		for (Entity entity = 0; entity < MaxEntities; entity++)
+		for (EntityType entity = 1; entity < MaxEntities; entity++)
 		{
-			myAvailableEntities.push(entity);
+			myAvailableEntities.emplace(entity);
 		}
 	}
 

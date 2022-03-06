@@ -19,7 +19,7 @@
     <ClInclude Include="Source\QPEcs\ComponentRegistryBase.h">
       <Filter>QPEcs</Filter>
     </ClInclude>
-    <ClInclude Include="Source\QPEcs\Entity.h">
+    <ClInclude Include="Source\QPEcs\Entity.hpp">
       <Filter>QPEcs</Filter>
     </ClInclude>
     <ClInclude Include="Source\QPEcs\EntityComponentSystem.hpp">
