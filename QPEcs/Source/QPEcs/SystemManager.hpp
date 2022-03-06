@@ -25,6 +25,9 @@ namespace QPEcs
 
 			template <class System>
 			inline std::shared_ptr<System> GetSystem();
+
+			template <class System>
+			inline std::shared_ptr<System> GetAndRegisterSystem(EntityComponentSystem* aECS);
 		private:
 			std::unordered_map<TypeName, Signature> mySignatures {};
 			std::unordered_map<TypeName, std::shared_ptr<SystemBase>> mySystems {};
@@ -63,7 +66,6 @@ namespace QPEcs
 	{
 		static_assert(std::is_base_of_v<SystemBase, System>, "Systems need to inherit from QPEcs::SystemBase");
 		assert(!mySystems.contains(GetTypeName<System>()) && "System has already been registered!");
-
 		mySystems[GetTypeName<System>()] = std::make_shared<System>();
 		mySystems[GetTypeName<System>()]->myECS = aECS;
 	}
@@ -83,6 +85,19 @@ namespace QPEcs
 		static_assert(std::is_base_of_v<SystemBase, System>, "Systems need to inherit from QPEcs::SystemBase");
 		assert(mySystems.contains(GetTypeName<System>()) && "System needs to be registered before use!");
 		return std::static_pointer_cast<System>(mySystems[GetTypeName<System>()]);
+	}
+
+	template <class System>
+	inline std::shared_ptr<System> SystemManager::GetAndRegisterSystem(EntityComponentSystem* aECS)
+	{
+		static_assert(std::is_base_of_v<SystemBase, System>, "Systems need to inherit from QPEcs::SystemBase");
+
+		if(!mySystems.contains(GetTypeName<System>()))
+		{
+			RegisterSystem<System>(aECS);
+		}
+
+		return GetSystem<System>();
 	}
 
 	template <class System>

@@ -9,6 +9,7 @@ namespace QPEcs
 {
 	class EntityManager
 	{
+		friend class EntityComponentSystem;
 		public:
 			EntityManager();
 			~EntityManager() = default;
@@ -27,6 +28,7 @@ namespace QPEcs
 			UInt32 myEntitiesCount {};
 			
 	};
+
 
 	inline EntityManager::EntityManager()
 	{

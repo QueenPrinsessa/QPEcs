@@ -15,4 +15,5 @@ namespace QPEcs
 
 	using EntityType = UInt64;
 	using ComponentType = UInt8;
+
 }
