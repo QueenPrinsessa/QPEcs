@@ -23,9 +23,8 @@ namespace QPEcs
 			Signature GetSignature(Entity aEntity);
 			
 		private:
-			std::queue<Entity> myAvailableEntities {};
+			std::bitset<MaxEntities> myEntities {};
 			std::array<Signature, MaxEntities> mySignatures {};
-			std::bitset<MaxEntities> myExistingEntities;
 			UInt32 myEntitiesCount {};
 			
 	};
@@ -33,21 +32,23 @@ namespace QPEcs
 
 	inline EntityManager::EntityManager()
 	{
-		for (EntityType entity = 0; entity < MaxEntities; entity++)
-		{
-			myAvailableEntities.emplace(entity);
-		}
 	}
 
 	inline Entity EntityManager::CreateEntity()
 	{
 		assert(myEntitiesCount < MaxEntities && "Number of entities exceeding max entities!");
 
-		Entity entity = myAvailableEntities.front();
-		myAvailableEntities.pop();
+		Entity entity = 0;
+		for (EntityType nextEntity = 0; nextEntity < MaxEntities; nextEntity++)
+		{
+			if(!myEntities[nextEntity])
+			{
+				entity = nextEntity;
+				break;
+			}
+		}
 
-		myExistingEntities.set(entity);
-
+		myEntities.set(entity);
 		myEntitiesCount++;
 
 		return entity;
@@ -57,9 +58,8 @@ namespace QPEcs
 	{
 		assert(aEntity < MaxEntities && "Attempting to destroy entity out of range!");
 
-		myExistingEntities.reset(aEntity);
+		myEntities.reset(aEntity);
 		mySignatures[aEntity].reset();
-		myAvailableEntities.push(aEntity);
 
 		myEntitiesCount--;
 	}

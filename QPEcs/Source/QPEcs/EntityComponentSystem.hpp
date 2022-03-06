@@ -193,7 +193,7 @@ namespace QPEcs
 	{
 		for (EntityType entity = 0; entity < MaxEntities; entity++)
 		{
-			if(myEntityManager->myExistingEntities[entity])
+			if(myEntityManager->myEntities[entity])
 			{
 				mySystemManager->OnEntitySignatureChanged(entity, myEntityManager->GetSignature(entity));
 			}

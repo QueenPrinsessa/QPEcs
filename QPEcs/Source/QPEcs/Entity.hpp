@@ -3,7 +3,7 @@
 
 namespace QPEcs
 {
-	constexpr EntityType MaxEntities = 5000;
+	constexpr EntityType MaxEntities = 4096;
 
 	using Entity = EntityType;
 }
