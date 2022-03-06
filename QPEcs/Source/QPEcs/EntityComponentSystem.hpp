@@ -1,62 +1,66 @@
 #pragma once
 
+<<<<<<< HEAD
 #include "EntityManager.hpp"
+=======
+>>>>>>> e4ae228104eabef27393d8f9cb31a944654ad077
 #include "ComponentManager.hpp"
 #include "SystemManager.hpp"
+#include "EntityManager.hpp"
 
 namespace QPEcs
 {
 	class EntityComponentSystem
 	{
-		public:
-			EntityComponentSystem();
-			~EntityComponentSystem() = default;
+	public:
+		EntityComponentSystem();
+		~EntityComponentSystem() = default;
 
-			inline Entity CreateEntity();
+		inline Entity CreateEntity();
 
-			inline void DestroyEntity(Entity aEntity);
+		inline void DestroyEntity(Entity aEntity);
 
-			template <class Component>
-			inline bool HasComponent(Entity aEntity);
+		template <class Component>
+		inline bool HasComponent(Entity aEntity);
 
-			template <class Component>
-			inline void RegisterComponent();
+		template <class Component>
+		inline void RegisterComponent();
 
-			template <class Component>
-			inline void AddComponent(Entity aEntity, Component aComponent);
+		template <class Component>
+		inline void AddComponent(Entity aEntity, Component aComponent);
 
-			template <class Component>
-			inline void AddAndRegisterComponent(Entity aEntity, Component aComponent);
+		template <class Component>
+		inline void AddAndRegisterComponent(Entity aEntity, Component aComponent);
 
-			template <class Component>
-			inline void RemoveComponent(Entity aEntity);
+		template <class Component>
+		inline void RemoveComponent(Entity aEntity);
 
-			template <class Component>
-			inline Component& GetComponent(Entity aEntity);
+		template <class Component>
+		inline Component& GetComponent(Entity aEntity);
 
-			template <class Component>
-			inline Component& GetOrAddComponent(Entity aEntity);
+		template <class Component>
+		inline Component& GetOrAddComponent(Entity aEntity);
 
-			template <class Component>
-			inline ComponentType GetComponentType();
+		template <class Component>
+		inline ComponentType GetComponentType();
 
-			template <class System>
-			inline void RegisterSystem(bool aNotifyOfExistingEntities = true);
+		template <class System>
+		inline void RegisterSystem(bool aNotifyOfExistingEntities = true);
 
-			template <class System>
-			inline void SetSystemSignature(Signature aSignature);
+		template <class System>
+		inline void SetSystemSignature(Signature aSignature);
 
-			template <class System>
-			inline std::shared_ptr<System> GetSystem();
+		template <class System>
+		inline std::shared_ptr<System> GetSystem();
 
 		template <class System>
 		inline std::shared_ptr<System> GetAndRegisterSystem();
 
-		private:
-			std::unique_ptr<EntityManager> myEntityManager;
-			std::unique_ptr<ComponentManager> myComponentManager;
-			std::unique_ptr<SystemManager> mySystemManager;
-			void NotifySystemsOfAllEntities();
+	private:
+		std::unique_ptr<EntityManager> myEntityManager;
+		std::unique_ptr<ComponentManager> myComponentManager;
+		std::unique_ptr<SystemManager> mySystemManager;
+		void NotifySystemsOfAllEntities();
 	};
 
 	template <class Component>
@@ -124,7 +128,7 @@ namespace QPEcs
 		auto newSignature = signature;
 		signature.set(myComponentManager->GetComponentType<Component>());
 
-		if(signature != newSignature)
+		if (signature != newSignature)
 		{
 			myEntityManager->SetSignature(aEntity, signature);
 			mySystemManager->OnEntitySignatureChanged(aEntity, signature);
@@ -144,7 +148,7 @@ namespace QPEcs
 	{
 		mySystemManager->RegisterSystem<System>(this);
 
-		if(aNotifyOfExistingEntities)
+		if (aNotifyOfExistingEntities)
 		{
 			NotifySystemsOfAllEntities();
 		}
@@ -179,7 +183,13 @@ namespace QPEcs
 
 	inline Entity EntityComponentSystem::CreateEntity()
 	{
+<<<<<<< HEAD
 		return  myEntityManager->CreateEntity();
+=======
+		Entity entity = myEntityManager->CreateEntity();
+		//entity.myECS = this;
+		return entity;
+>>>>>>> e4ae228104eabef27393d8f9cb31a944654ad077
 	}
 
 	inline void EntityComponentSystem::DestroyEntity(Entity aEntity)
