@@ -1,12 +1,8 @@
 #pragma once
 
-<<<<<<< HEAD
 #include "EntityManager.hpp"
-=======
->>>>>>> e4ae228104eabef27393d8f9cb31a944654ad077
 #include "ComponentManager.hpp"
 #include "SystemManager.hpp"
-#include "EntityManager.hpp"
 
 namespace QPEcs
 {
@@ -183,13 +179,7 @@ namespace QPEcs
 
 	inline Entity EntityComponentSystem::CreateEntity()
 	{
-<<<<<<< HEAD
 		return  myEntityManager->CreateEntity();
-=======
-		Entity entity = myEntityManager->CreateEntity();
-		//entity.myECS = this;
-		return entity;
->>>>>>> e4ae228104eabef27393d8f9cb31a944654ad077
 	}
 
 	inline void EntityComponentSystem::DestroyEntity(Entity aEntity)
