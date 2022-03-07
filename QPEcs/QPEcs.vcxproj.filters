@@ -28,7 +28,7 @@
     <ClInclude Include="Source\QPEcs\EntityManager.hpp">
       <Filter>QPEcs</Filter>
     </ClInclude>
-    <ClInclude Include="Source\QPEcs\SystemBase.h">
+    <ClInclude Include="Source\QPEcs\System.hpp">
       <Filter>QPEcs</Filter>
     </ClInclude>
     <ClInclude Include="Source\QPEcs\SystemManager.hpp">
