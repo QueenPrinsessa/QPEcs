@@ -18,10 +18,10 @@ namespace QPEcs
 			ComponentType GetComponentType();
 
 			template <class Component>
-			void AddComponent(Entity aEntity, Component aComponent);
+			void AddComponent(Entity aEntity);
 
 			template <class Component>
-			void AddAndRegisterComponent(Entity aEntity, Component aComponent);
+			void AddAndRegisterComponent(Entity aEntity);
 
 			template <class Component>
 			void RemoveComponent(Entity aEntity);
@@ -73,20 +73,20 @@ namespace QPEcs
 	}
 
 	template <class Component>
-	void ComponentManager::AddComponent(Entity aEntity, Component aComponent)
+	void ComponentManager::AddComponent(Entity aEntity)
 	{
-		GetComponentRegistry<Component>()->AddComponent(aEntity, aComponent);
+		GetComponentRegistry<Component>()->AddComponent(aEntity);
 	}
 
 	template <class Component>
-	void ComponentManager::AddAndRegisterComponent(Entity aEntity, Component aComponent)
+	void ComponentManager::AddAndRegisterComponent(Entity aEntity)
 	{
 		if(!myComponentTypes.contains(GetTypeName<Component>()))
 		{
 			RegisterComponent<Component>();
 		}
 
-		AddComponent(aEntity, aComponent);
+		AddComponent<Component>(aEntity);
 	}
 
 	template <class Component>
