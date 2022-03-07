@@ -142,7 +142,7 @@
     <ClInclude Include="Source\QPEcs\Entity.hpp" />
     <ClInclude Include="Source\QPEcs\EntityComponentSystem.hpp" />
     <ClInclude Include="Source\QPEcs\EntityManager.hpp" />
-    <ClInclude Include="Source\QPEcs\System.hpp" />
+    <ClInclude Include="Source\QPEcs\SystemBase.h" />
     <ClInclude Include="Source\QPEcs\SystemManager.hpp" />
     <ClInclude Include="Source\QPEcs\Types.h" />
   </ItemGroup>
