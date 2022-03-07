@@ -23,10 +23,10 @@ namespace QPEcs
 		inline void RegisterComponent();
 
 		template <class Component>
-		inline void AddComponent(Entity aEntity, Component aComponent);
+		inline void AddComponent(Entity aEntity);
 
 		template <class Component>
-		inline void AddAndRegisterComponent(Entity aEntity, Component aComponent);
+		inline void AddAndRegisterComponent(Entity aEntity);
 
 		template <class Component>
 		inline void RemoveComponent(Entity aEntity);
@@ -45,6 +45,9 @@ namespace QPEcs
 
 		template <class System>
 		inline void SetSystemSignature(Signature aSignature);
+
+		template <class System, class... Components>
+		inline void SetSystemSignature();
 
 		template <class System>
 		inline std::shared_ptr<System> GetSystem();
@@ -74,9 +77,9 @@ namespace QPEcs
 	}
 
 	template <class Component>
-	inline void EntityComponentSystem::AddComponent(Entity aEntity, Component aComponent)
+	inline void EntityComponentSystem::AddComponent(Entity aEntity)
 	{
-		myComponentManager->AddComponent(aEntity, aComponent);
+		myComponentManager->AddComponent<Component>(aEntity);
 
 		auto signature = myEntityManager->GetSignature(aEntity);
 		signature.set(myComponentManager->GetComponentType<Component>());
@@ -86,9 +89,9 @@ namespace QPEcs
 	}
 
 	template <class Component>
-	inline void EntityComponentSystem::AddAndRegisterComponent(Entity aEntity, Component aComponent)
+	inline void EntityComponentSystem::AddAndRegisterComponent(Entity aEntity)
 	{
-		myComponentManager->AddAndRegisterComponent(aEntity, aComponent);
+		myComponentManager->AddAndRegisterComponent<Component>(aEntity);
 
 		auto signature = myEntityManager->GetSignature(aEntity);
 		signature.set(myComponentManager->GetComponentType<Component>());
@@ -154,6 +157,14 @@ namespace QPEcs
 	inline void EntityComponentSystem::SetSystemSignature(Signature aSignature)
 	{
 		mySystemManager->SetSignature<System>(aSignature);
+	}
+
+	template <class System, class ... Components>
+	void EntityComponentSystem::SetSystemSignature()
+	{
+		Signature signature;
+		((signature.set(GetComponentType<Components>())),...);
+		mySystemManager->SetSignature<System>(signature);
 	}
 
 	template <class System>
