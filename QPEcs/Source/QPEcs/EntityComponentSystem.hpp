@@ -185,7 +185,7 @@ namespace QPEcs
 	{
 		myComponentManager = std::make_unique<ComponentManager>();
 		myEntityManager = std::make_unique<EntityManager>();
-		mySystemManager = std::make_unique<SystemManager>();
+		mySystemManager = std::make_unique<SystemManager>(myComponentManager.get());
 	}
 
 	inline Entity EntityComponentSystem::CreateEntity()
