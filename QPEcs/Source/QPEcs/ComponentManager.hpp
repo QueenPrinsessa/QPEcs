@@ -29,6 +29,9 @@ namespace QPEcs
 			template <class Component, class ... Args>
 			Component& GetOrAddComponent(Entity aEntity, Args&&... aArgs);
 
+			template <class Component>
+			bool IsRegistered();
+
 			void OnEntityDestroyed(Entity aEntity);
 
 		private:
@@ -42,6 +45,12 @@ namespace QPEcs
 			template <class Component>
 			TypeName GetTypeName();
 	};
+
+	template <class Component>
+	inline bool ComponentManager::IsRegistered()
+	{
+		return myComponentTypes.contains(GetTypeName<Component>());
+	}
 
 	inline void ComponentManager::OnEntityDestroyed(Entity aEntity)
 	{
