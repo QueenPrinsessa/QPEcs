@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.hpp"
+#include "ComponentManager.hpp"
 #include <set>
 namespace QPEcs
 {
@@ -8,8 +9,22 @@ namespace QPEcs
 	{
 		friend class SystemManager;
 		friend class EntityComponentSystem;
+		public:
+			template <class ... Components>
+			void SetSignature();
 		protected:
 			std::set<Entity> myEntities {};
 			EntityComponentSystem* myECS { nullptr };
+		private:
+			ComponentManager* myComponentManager;
+			Signature mySignature;
 	};
+
+	template <class ... Components>
+	void SystemBase::SetSignature()
+	{
+		Signature signature;
+		((signature.set(myComponentManager->GetComponentType<Components>())), ...);
+		mySignature = signature;
+	}
 }
