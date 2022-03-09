@@ -22,11 +22,8 @@ namespace QPEcs
 		template <class Component>
 		inline void RegisterComponent();
 
-		template <class Component>
-		inline void AddComponent(Entity aEntity);
-
-		template <class Component>
-		inline void AddAndRegisterComponent(Entity aEntity);
+		template <class Component, typename ... Args>
+		inline void AddComponent(Entity aEntity, Args&&... aArgs);
 
 		template <class Component>
 		inline void RemoveComponent(Entity aEntity);
@@ -34,8 +31,8 @@ namespace QPEcs
 		template <class Component>
 		inline Component& GetComponent(Entity aEntity);
 
-		template <class Component>
-		inline Component& GetOrAddComponent(Entity aEntity);
+		template <class Component, typename ... Args>
+		inline Component& GetOrAddComponent(Entity aEntity, Args&&... aArgs);
 
 		template <class Component>
 		inline ComponentType GetComponentType();
@@ -76,22 +73,10 @@ namespace QPEcs
 		myComponentManager->RegisterComponent<Component>();
 	}
 
-	template <class Component>
-	inline void EntityComponentSystem::AddComponent(Entity aEntity)
+	template <class Component, typename ... Args>
+	inline void EntityComponentSystem::AddComponent(Entity aEntity, Args&&... aArgs)
 	{
-		myComponentManager->AddComponent<Component>(aEntity);
-
-		auto signature = myEntityManager->GetSignature(aEntity);
-		signature.set(myComponentManager->GetComponentType<Component>());
-		myEntityManager->SetSignature(aEntity, signature);
-
-		mySystemManager->OnEntitySignatureChanged(aEntity, signature);
-	}
-
-	template <class Component>
-	inline void EntityComponentSystem::AddAndRegisterComponent(Entity aEntity)
-	{
-		myComponentManager->AddAndRegisterComponent<Component>(aEntity);
+		myComponentManager->AddComponent<Component>(aEntity, std::forward<Args>(aArgs)...);
 
 		auto signature = myEntityManager->GetSignature(aEntity);
 		signature.set(myComponentManager->GetComponentType<Component>());
@@ -118,11 +103,11 @@ namespace QPEcs
 		return myComponentManager->GetComponent<Component>(aEntity);
 	}
 
-	template <class Component>
-	inline Component& EntityComponentSystem::GetOrAddComponent(Entity aEntity)
+	template <class Component, typename ... Args>
+	inline Component& EntityComponentSystem::GetOrAddComponent(Entity aEntity, Args&&... aArgs)
 	{
 		auto signature = myEntityManager->GetSignature(aEntity);
-		Component& component = myComponentManager->GetOrAddComponent<Component>();
+		Component& component = myComponentManager->GetOrAddComponent<Component>(std::forward<Args>(aArgs)...);
 
 		auto newSignature = signature;
 		signature.set(myComponentManager->GetComponentType<Component>());
@@ -185,7 +170,7 @@ namespace QPEcs
 	{
 		myComponentManager = std::make_unique<ComponentManager>();
 		myEntityManager = std::make_unique<EntityManager>();
-		mySystemManager = std::make_unique<SystemManager>();
+		mySystemManager = std::make_unique<SystemManager>(myComponentManager.get());
 	}
 
 	inline Entity EntityComponentSystem::CreateEntity()
