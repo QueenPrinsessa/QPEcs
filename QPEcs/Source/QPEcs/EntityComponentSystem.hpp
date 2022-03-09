@@ -58,7 +58,7 @@ namespace QPEcs
 		inline std::shared_ptr<System> GetSystem();
 
 		template <class System>
-		inline std::shared_ptr<System> GetAndRegisterSystem();
+		inline std::shared_ptr<System> GetAndRegisterSystem(bool aNotifyOfExistingEntities = true);
 
 	private:
 		std::unique_ptr<EntityManager> myEntityManager;
@@ -184,10 +184,15 @@ namespace QPEcs
 	}
 
 	template <class System>
-	std::shared_ptr<System> EntityComponentSystem::GetAndRegisterSystem()
+	std::shared_ptr<System> EntityComponentSystem::GetAndRegisterSystem(bool aNotifyOfExistingEntities)
 	{
 		auto system = mySystemManager->GetAndRegisterSystem<System>();
-		NotifySystemsOfAllEntities();
+
+		if(aNotifyOfExistingEntities)
+		{
+			NotifySystemsOfAllEntities();
+		}
+
 		return system;
 	}
 
