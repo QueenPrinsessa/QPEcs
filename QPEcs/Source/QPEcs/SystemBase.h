@@ -1,6 +1,7 @@
 #pragma once
 #include "Entity.hpp"
 #include "ComponentManager.hpp"
+#include "Component.h"
 #include <set>
 namespace QPEcs
 {
