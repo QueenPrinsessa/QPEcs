@@ -17,11 +17,8 @@ namespace QPEcs
 			template <class Component>
 			ComponentType GetComponentType();
 
-			template <class Component>
-			void AddComponent(Entity aEntity);
-
-			template <class Component>
-			void AddAndRegisterComponent(Entity aEntity);
+			template <class Component, class ... Args>
+			void AddComponent(Entity aEntity, Args&&... aArgs);
 
 			template <class Component>
 			void RemoveComponent(Entity aEntity);
@@ -29,8 +26,8 @@ namespace QPEcs
 			template <class Component>
 			Component& GetComponent(Entity aEntity);
 
-			template <class Component>
-			Component& GetOrAddComponent(Entity aEntity);
+			template <class Component, class ... Args>
+			Component& GetOrAddComponent(Entity aEntity, Args&&... aArgs);
 
 			void OnEntityDestroyed(Entity aEntity);
 
@@ -72,21 +69,10 @@ namespace QPEcs
 		return myComponentTypes[GetTypeName<Component>()];
 	}
 
-	template <class Component>
-	void ComponentManager::AddComponent(Entity aEntity)
+	template <class Component, class ... Args>
+	void ComponentManager::AddComponent(Entity aEntity, Args&&... aArgs)
 	{
-		GetComponentRegistry<Component>()->AddComponent(aEntity);
-	}
-
-	template <class Component>
-	void ComponentManager::AddAndRegisterComponent(Entity aEntity)
-	{
-		if(!myComponentTypes.contains(GetTypeName<Component>()))
-		{
-			RegisterComponent<Component>();
-		}
-
-		AddComponent<Component>(aEntity);
+		GetComponentRegistry<Component>()->AddComponent(aEntity, std::forward<Args>(aArgs)...);
 	}
 
 	template <class Component>
@@ -101,13 +87,13 @@ namespace QPEcs
 		return GetComponentRegistry<Component>()->GetComponent(aEntity);
 	}
 
-	template <class Component>
-	Component& ComponentManager::GetOrAddComponent(Entity aEntity)
+	template <class Component, class ... Args>
+	Component& ComponentManager::GetOrAddComponent(Entity aEntity, Args&&... aArgs)
 	{
 
 		if (!myComponentTypes.contains(GetTypeName<Component>()))
 		{
-			AddAndRegisterComponent(aEntity, Component());
+			AddComponent<Component>(aEntity, std::forward<Args>(aArgs)...);
 		}
 
 		return GetComponent<Component>();

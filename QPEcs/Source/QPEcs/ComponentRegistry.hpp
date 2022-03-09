@@ -12,7 +12,10 @@ namespace QPEcs
 		public:
 			ComponentRegistry();
 			virtual ~ComponentRegistry() override;
-			void AddComponent(Entity aEntity);
+
+			template<typename ... Args>
+			void AddComponent(Entity aEntity, Args&&... aArgs);
+
 			void RemoveComponent(Entity aEntity);
 
 			Component& GetComponent(Entity aEntity);
@@ -47,14 +50,15 @@ namespace QPEcs
 	}
 
 	template <typename Component>
-	void ComponentRegistry<Component>::AddComponent(Entity aEntity)
+	template <typename ... Args>
+	void ComponentRegistry<Component>::AddComponent(Entity aEntity, Args&&... aArgs)
 	{
 		assert(!myEntityToIndexMap.contains(aEntity) && "Entity already has component");
 
 		UInt64 index = mySize++;
 		myEntityToIndexMap[aEntity] = index;
 		myIndexToEntityMap[index] = aEntity;
-		myComponents[index] = new Component;
+		myComponents[index] = new Component(std::forward<Args>(aArgs)...);
 	}
 
 	template <typename Component>
