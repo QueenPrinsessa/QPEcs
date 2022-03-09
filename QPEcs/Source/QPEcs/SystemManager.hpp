@@ -19,6 +19,9 @@ namespace QPEcs
 			inline void RegisterSystem(EntityComponentSystem* aECS);
 
 			template <class System>
+			inline void IsRegistered();
+
+			template <class System>
 			inline void SetSignature(Signature aSignature);
 
 			inline void OnEntityDestroyed(Entity aEntity);
@@ -37,6 +40,12 @@ namespace QPEcs
 			template <class System>
 			inline TypeName GetTypeName();
 	};
+
+	template <class System>
+	inline void SystemManager::IsRegistered()
+	{
+		return mySystems.contains(GetTypeName<System>());
+	}
 
 	inline SystemManager::SystemManager(ComponentManager* aComponentManager)
 		: myComponentManager(aComponentManager)

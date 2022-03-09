@@ -21,6 +21,8 @@ namespace QPEcs
 			void SetSignature(Entity aEntity, Signature aSignature);
 
 			Signature GetSignature(Entity aEntity);
+
+			bool IsValid(Entity aEntity);
 			
 		private:
 			std::bitset<MaxEntities> myEntities {};
@@ -28,6 +30,11 @@ namespace QPEcs
 			UInt32 myEntitiesCount {};
 			
 	};
+
+	inline bool EntityManager::IsValid(Entity aEntity)
+	{
+		return myEntities[aEntity];
+	}
 
 
 	inline EntityManager::EntityManager()

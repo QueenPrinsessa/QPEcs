@@ -16,8 +16,16 @@ namespace QPEcs
 
 		inline void DestroyEntity(Entity aEntity);
 
+		bool IsValidEntity(Entity aEntity);
+
 		template <class Component>
 		inline bool HasComponent(Entity aEntity);
+
+		template <class Component>
+		inline bool IsComponentRegistered();
+
+		template <class System>
+		inline bool IsSystemRegistered();
 
 		template <class Component>
 		inline void RegisterComponent();
@@ -58,6 +66,23 @@ namespace QPEcs
 		std::unique_ptr<SystemManager> mySystemManager;
 		void NotifySystemsOfAllEntities();
 	};
+
+	inline bool EntityComponentSystem::IsValidEntity(Entity aEntity)
+	{
+		return myEntityManager->IsValid(aEntity);
+	}
+
+	template <class Component>
+	inline bool EntityComponentSystem::IsComponentRegistered()
+	{
+		return myComponentManager->IsRegistered<Component>();
+	}
+
+	template <class System>
+	inline bool EntityComponentSystem::IsSystemRegistered()
+	{
+		return mySystemManager->IsRegistered<System>();
+	}
 
 	template <class Component>
 	inline bool EntityComponentSystem::HasComponent(Entity aEntity)
