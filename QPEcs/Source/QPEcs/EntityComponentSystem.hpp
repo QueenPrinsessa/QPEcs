@@ -186,7 +186,7 @@ namespace QPEcs
 	template <class System>
 	std::shared_ptr<System> EntityComponentSystem::GetAndRegisterSystem(bool aNotifyOfExistingEntities)
 	{
-		auto system = mySystemManager->GetAndRegisterSystem<System>();
+		auto system = mySystemManager->GetAndRegisterSystem<System>(this);
 
 		if(aNotifyOfExistingEntities)
 		{
