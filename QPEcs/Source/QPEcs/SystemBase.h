@@ -11,6 +11,8 @@ namespace QPEcs
 		friend class SystemManager;
 		friend class EntityComponentSystem;
 		public:
+			virtual ~SystemBase() = default;
+
 			template <class ... Components>
 			void SetSignature();
 		protected:
