@@ -18,6 +18,8 @@ namespace QPEcs
 
 			void RemoveComponent(Entity aEntity);
 
+			void CopyComponent(Entity aFrom, Entity aTo);
+
 			Component& GetComponent(Entity aEntity);
 
 			virtual void OnEntityDestroyed(Entity aEntity) override;
@@ -79,6 +81,19 @@ namespace QPEcs
 
 		myEntityToIndexMap.erase(aEntity);
 		myIndexToEntityMap.erase(lastIndex);
+	}
+
+	template <typename Component>
+	void ComponentRegistry<Component>::CopyComponent(Entity aFrom, Entity aTo)
+	{
+		assert(myEntityToIndexMap.contains(aFrom) && "The entity to copy from doesn't have component");
+		assert(!myEntityToIndexMap.contains(aTo) && "The entity to copy to already has component");
+		Component& componentToCopy = GetComponent(aFrom);
+
+		UInt64 index = mySize++;
+		myEntityToIndexMap[aTo] = index;
+		myIndexToEntityMap[index] = aTo;
+		myComponents[index] = new Component(componentToCopy);
 	}
 
 	template <typename Component>

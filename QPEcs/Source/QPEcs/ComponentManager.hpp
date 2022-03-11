@@ -30,6 +30,9 @@ namespace QPEcs
 			Component& GetOrAddComponent(Entity aEntity, Args&&... aArgs);
 
 			template <class Component>
+			inline void CopyComponent(Entity aFrom, Entity aTo);
+
+			template <class Component>
 			bool IsRegistered();
 
 			void OnEntityDestroyed(Entity aEntity);
@@ -107,6 +110,14 @@ namespace QPEcs
 
 		return GetComponent<Component>();
 
+	}
+
+	template <class Component>
+	void ComponentManager::CopyComponent(Entity aFrom, Entity aTo)
+	{
+		assert(myComponentTypes.contains(GetTypeName<Component>()) && "You need to register components before copying them!");
+
+		GetComponentRegistry<Component>()->CopyComponent(aFrom, aTo);
 	}
 
 	template <class Component>

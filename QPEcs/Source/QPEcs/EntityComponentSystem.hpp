@@ -37,6 +37,18 @@ namespace QPEcs
 		inline void RemoveComponent(Entity aEntity);
 
 		template <class Component>
+		inline void CopyComponent(Entity aFrom, Entity aTo);
+
+		template <class ... Components>
+		inline void CopyComponents(Entity aFrom, Entity aTo);
+
+		template <class Component>
+		inline void TryCopyComponent(Entity aFrom, Entity aTo);
+
+		template <class ... Components>
+		inline void TryCopyComponents(Entity aFrom, Entity aTo);
+
+		template <class Component>
 		inline Component& GetComponent(Entity aEntity);
 
 		template <class Component, typename ... Args>
@@ -120,6 +132,42 @@ namespace QPEcs
 		myEntityManager->SetSignature(aEntity, signature);
 
 		mySystemManager->OnEntitySignatureChanged(aEntity, signature);
+	}
+
+	template <class Component>
+	void EntityComponentSystem::CopyComponent(Entity aFrom, Entity aTo)
+	{
+		myComponentManager->CopyComponent<Component>(aFrom, aTo);
+
+		auto signature = myEntityManager->GetSignature(aTo);
+		signature.set(myComponentManager->GetComponentType<Component>());
+		myEntityManager->SetSignature(aTo, signature);
+
+		mySystemManager->OnEntitySignatureChanged(aTo, signature);
+	}
+
+	template <class ... Components>
+	void EntityComponentSystem::CopyComponents(Entity aFrom, Entity aTo)
+	{
+		((CopyComponent<Components>(aFrom, aTo)), ...);
+	}
+
+	template <class Component>
+	void EntityComponentSystem::TryCopyComponent(Entity aFrom, Entity aTo)
+	{
+		if(!HasComponent<Component>(aFrom))
+		{
+			return;
+		}
+
+		CopyComponent<Component>(aFrom, aTo);
+	}
+
+	template <class ... Components>
+	void EntityComponentSystem::TryCopyComponents(Entity aFrom, Entity aTo)
+	{
+		((TryCopyComponent<Components>(aFrom, aTo)), ...);
+
 	}
 
 	template <class Component>
