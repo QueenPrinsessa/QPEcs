@@ -77,7 +77,7 @@ namespace QPEcs
 		inline std::shared_ptr<System> GetAndRegisterSystem(bool aNotifyOfExistingEntities = true);
 
 		template <class ... Components>
-		inline View<Components...>& GetView();
+		inline const View<Components...>& GetView();
 
 	private:
 		std::unique_ptr<EntityManager> myEntityManager;
@@ -249,7 +249,7 @@ namespace QPEcs
 	}
 
 	template <class ... Components>
-	View<Components...>& EntityComponentSystem::GetView()
+	const View<Components...>& EntityComponentSystem::GetView()
 	{
 		if(!myViewManager->IsRegistered<Components...>())
 		{
