@@ -190,19 +190,12 @@ namespace QPEcs
 	template <class Component, typename ... Args>
 	inline Component& EntityComponentSystem::GetOrAddComponent(Entity aEntity, Args&&... aArgs)
 	{
-		auto signature = myEntityManager->GetSignature(aEntity);
-		Component& component = myComponentManager->GetOrAddComponent<Component>(std::forward<Args>(aArgs)...);
-
-		auto newSignature = signature;
-		signature.set(myComponentManager->GetComponentType<Component>());
-
-		if (signature != newSignature)
+		if(!HasComponent<Component>(aEntity))
 		{
-			myEntityManager->SetSignature(aEntity, signature);
-			mySystemManager->OnEntitySignatureChanged(aEntity, signature);
+			AddComponent<Component>(aEntity, std::forward<Args>(aArgs)...);
 		}
 
-		return component;
+		return GetComponent<Component>(aEntity);
 	}
 
 	template <class Component>

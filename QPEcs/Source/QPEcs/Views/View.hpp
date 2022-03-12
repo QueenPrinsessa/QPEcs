@@ -11,19 +11,13 @@ namespace QPEcs
 		public:
 			virtual ~View() override = default;
 
-			std::tuple<Components&...> Get(Entity aEntity);
-			std::tuple<const Components&...> Get(Entity aEntity) const;
+			std::tuple<Components&...> Get(Entity aEntity) const;
 	};
 
 	template <class ... Components>
-	std::tuple<Components&...> View<Components...>::Get(Entity aEntity)
+	std::tuple<Components&...> View<Components...>::Get(Entity aEntity) const
 	{
 		return std::tie(myECS->GetComponent<Components>(aEntity)...);
 	}
 
-	template <class ... Components>
-	std::tuple<const Components&...> View<Components...>::Get(Entity aEntity) const 
-	{
-		return std::tie(myECS->GetComponent<Components>(aEntity)...);
-	}
 }
