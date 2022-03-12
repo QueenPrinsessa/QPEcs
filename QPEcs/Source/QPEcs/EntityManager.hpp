@@ -20,9 +20,9 @@ namespace QPEcs
 
 			void SetSignature(Entity aEntity, Signature aSignature);
 
-			Signature GetSignature(Entity aEntity);
+			Signature GetSignature(Entity aEntity) const;
 
-			bool IsValid(Entity aEntity);
+			bool IsValid(Entity aEntity) const;
 			
 		private:
 			std::bitset<MaxEntities> myEntities {};
@@ -31,7 +31,7 @@ namespace QPEcs
 			
 	};
 
-	inline bool EntityManager::IsValid(Entity aEntity)
+	inline bool EntityManager::IsValid(Entity aEntity) const
 	{
 		return myEntities[aEntity];
 	}
@@ -78,7 +78,7 @@ namespace QPEcs
 		mySignatures[aEntity] = aSignature;
 	}
 
-	inline Signature EntityManager::GetSignature(Entity aEntity)
+	inline Signature EntityManager::GetSignature(Entity aEntity) const
 	{
 		assert(aEntity < MaxEntities && "Attempting to get signature for an entity out of range!");
 
