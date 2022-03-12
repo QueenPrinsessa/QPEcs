@@ -13,6 +13,8 @@ namespace QPEcs
 			virtual ~View() override = default;
 
 			auto Get(Entity aEntity) const;
+
+			void ForEach(std::function<void(Entity, Components&...)> aFunctionToRun) const;
 	};
 
 	template <class ... Components>
@@ -25,6 +27,15 @@ namespace QPEcs
 		else
 		{
 			return std::tie(myECS->GetComponent<Components>(aEntity)...);
+		}
+	}
+
+	template <class ... Components>
+	void View<Components...>::ForEach(std::function<void(Entity, Components&...)> aFunctionToRun) const
+	{
+		for (auto entity : myEntities)
+		{
+			aFunctionToRun(entity, myECS->GetComponent<Components>(entity)...);
 		}
 	}
 
