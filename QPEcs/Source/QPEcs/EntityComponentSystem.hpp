@@ -3,9 +3,13 @@
 #include "EntityManager.hpp"
 #include "ComponentManager.hpp"
 #include "SystemManager.hpp"
+#include "Views/ViewManager.hpp"
 
 namespace QPEcs
 {
+	template <class ... Components>
+	class View;
+
 	class EntityComponentSystem
 	{
 	public:
@@ -72,11 +76,16 @@ namespace QPEcs
 		template <class System>
 		inline std::shared_ptr<System> GetAndRegisterSystem(bool aNotifyOfExistingEntities = true);
 
+		template <class ... Components>
+		inline View<Components...>& GetView();
+
 	private:
 		std::unique_ptr<EntityManager> myEntityManager;
 		std::unique_ptr<ComponentManager> myComponentManager;
 		std::unique_ptr<SystemManager> mySystemManager;
+		std::unique_ptr<ViewManager> myViewManager;
 		void NotifySystemsOfAllEntities();
+		void NotifyViewsOfAllEntities();
 	};
 
 	inline bool EntityComponentSystem::IsValidEntity(Entity aEntity)
@@ -120,6 +129,7 @@ namespace QPEcs
 		myEntityManager->SetSignature(aEntity, signature);
 
 		mySystemManager->OnEntitySignatureChanged(aEntity, signature);
+		myViewManager->OnEntitySignatureChanged(aEntity, signature);
 	}
 
 	template <class Component>
@@ -132,6 +142,7 @@ namespace QPEcs
 		myEntityManager->SetSignature(aEntity, signature);
 
 		mySystemManager->OnEntitySignatureChanged(aEntity, signature);
+		myViewManager->OnEntitySignatureChanged(aEntity, signature);
 	}
 
 	template <class Component>
@@ -144,6 +155,7 @@ namespace QPEcs
 		myEntityManager->SetSignature(aTo, signature);
 
 		mySystemManager->OnEntitySignatureChanged(aTo, signature);
+		myViewManager->OnEntitySignatureChanged(aTo, signature);
 	}
 
 	template <class ... Components>
@@ -167,7 +179,6 @@ namespace QPEcs
 	void EntityComponentSystem::TryCopyComponents(Entity aFrom, Entity aTo)
 	{
 		((TryCopyComponent<Components>(aFrom, aTo)), ...);
-
 	}
 
 	template <class Component>
@@ -244,11 +255,23 @@ namespace QPEcs
 		return system;
 	}
 
+	template <class ... Components>
+	View<Components...>& EntityComponentSystem::GetView()
+	{
+		if(!myViewManager->IsRegistered<Components...>())
+		{
+			myViewManager->RegisterView<Components...>(this);
+			NotifyViewsOfAllEntities();
+		}
+		return *myViewManager->GetView<Components...>(this);
+	}
+
 	inline EntityComponentSystem::EntityComponentSystem()
 	{
 		myComponentManager = std::make_unique<ComponentManager>();
 		myEntityManager = std::make_unique<EntityManager>();
 		mySystemManager = std::make_unique<SystemManager>(myComponentManager.get());
+		myViewManager = std::make_unique<ViewManager>(myComponentManager.get());
 	}
 
 	inline Entity EntityComponentSystem::CreateEntity()
@@ -270,6 +293,17 @@ namespace QPEcs
 			if(myEntityManager->myEntities[entity])
 			{
 				mySystemManager->OnEntitySignatureChanged(entity, myEntityManager->GetSignature(entity));
+			}
+		}
+	}
+
+	inline void EntityComponentSystem::NotifyViewsOfAllEntities()
+	{
+		for (EntityType entity = 0; entity < MaxEntities; entity++)
+		{
+			if (myEntityManager->myEntities[entity])
+			{
+				myViewManager->OnEntitySignatureChanged(entity, myEntityManager->GetSignature(entity));
 			}
 		}
 	}

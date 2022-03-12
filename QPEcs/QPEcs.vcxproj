@@ -145,6 +145,9 @@
     <ClInclude Include="Source\QPEcs\SystemBase.h" />
     <ClInclude Include="Source\QPEcs\SystemManager.hpp" />
     <ClInclude Include="Source\QPEcs\Types.h" />
+    <ClInclude Include="Source\QPEcs\Views\GenericView.hpp" />
+    <ClInclude Include="Source\QPEcs\Views\View.hpp" />
+    <ClInclude Include="Source\QPEcs\Views\ViewManager.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

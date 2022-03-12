@@ -54,7 +54,7 @@ namespace QPEcs
 
 	inline void SystemManager::OnEntityDestroyed(Entity aEntity)
 	{
-		for (auto const& [typeName, system] : mySystems)
+		for (const auto& [typeName, system] : mySystems)
 		{
 			system->myEntities.erase(aEntity);
 		}
@@ -64,7 +64,7 @@ namespace QPEcs
 	{
 		for (auto const& [typeName, system] : mySystems)
 		{
-			auto const& systemSignature = mySystems[typeName]->mySignature;
+			const auto& systemSignature = mySystems[typeName]->mySignature;
 
 			if ((aEntitySignature & systemSignature) == systemSignature)
 			{
