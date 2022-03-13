@@ -26,9 +26,6 @@ namespace QPEcs
 			template <class Component>
 			Component& GetComponent(Entity aEntity);
 
-			template <class Component, class ... Args>
-			Component& GetOrAddComponent(Entity aEntity, Args&&... aArgs);
-
 			template <class Component>
 			inline void CopyComponent(Entity aFrom, Entity aTo);
 
@@ -99,18 +96,6 @@ namespace QPEcs
 		return GetComponentRegistry<Component>()->GetComponent(aEntity);
 	}
 
-	template <class Component, class ... Args>
-	Component& ComponentManager::GetOrAddComponent(Entity aEntity, Args&&... aArgs)
-	{
-
-		if (!myComponentTypes.contains(GetTypeName<Component>()))
-		{
-			AddComponent<Component>(aEntity, std::forward<Args>(aArgs)...);
-		}
-
-		return GetComponent<Component>();
-
-	}
 
 	template <class Component>
 	void ComponentManager::CopyComponent(Entity aFrom, Entity aTo)

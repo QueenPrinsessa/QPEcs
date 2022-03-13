@@ -20,7 +20,7 @@ namespace QPEcs
 
 		inline void DestroyEntity(Entity aEntity);
 
-		bool IsValidEntity(Entity aEntity);
+		bool IsValidEntity(Entity aEntity) const;
 
 		template <class Component>
 		inline bool HasComponent(Entity aEntity);
@@ -77,18 +77,32 @@ namespace QPEcs
 		inline std::shared_ptr<System> GetAndRegisterSystem(bool aNotifyOfExistingEntities = true);
 
 		template <class ... Components>
-		inline View<Components...>& GetView();
+		inline const View<Components...>& GetView();
+
+		inline void ForEach(std::function<void(Entity)> aFunctionToRun) const;
 
 	private:
 		std::unique_ptr<EntityManager> myEntityManager;
 		std::unique_ptr<ComponentManager> myComponentManager;
 		std::unique_ptr<SystemManager> mySystemManager;
 		std::unique_ptr<ViewManager> myViewManager;
+
 		void NotifySystemsOfAllEntities();
 		void NotifyViewsOfAllEntities();
 	};
 
-	inline bool EntityComponentSystem::IsValidEntity(Entity aEntity)
+	inline void EntityComponentSystem::ForEach(std::function<void(Entity)> aFunctionToRun) const
+	{
+		for (EntityType entity = 0; entity < MaxEntities; entity++)
+		{
+			if(IsValidEntity(entity))
+			{
+				aFunctionToRun(entity);
+			}
+		}
+	}
+
+	inline bool EntityComponentSystem::IsValidEntity(Entity aEntity) const
 	{
 		return myEntityManager->IsValid(aEntity);
 	}
@@ -190,19 +204,12 @@ namespace QPEcs
 	template <class Component, typename ... Args>
 	inline Component& EntityComponentSystem::GetOrAddComponent(Entity aEntity, Args&&... aArgs)
 	{
-		auto signature = myEntityManager->GetSignature(aEntity);
-		Component& component = myComponentManager->GetOrAddComponent<Component>(std::forward<Args>(aArgs)...);
-
-		auto newSignature = signature;
-		signature.set(myComponentManager->GetComponentType<Component>());
-
-		if (signature != newSignature)
+		if(!HasComponent<Component>(aEntity))
 		{
-			myEntityManager->SetSignature(aEntity, signature);
-			mySystemManager->OnEntitySignatureChanged(aEntity, signature);
+			AddComponent<Component>(aEntity, std::forward<Args>(aArgs)...);
 		}
 
-		return component;
+		return GetComponent<Component>(aEntity);
 	}
 
 	template <class Component>
@@ -256,7 +263,7 @@ namespace QPEcs
 	}
 
 	template <class ... Components>
-	View<Components...>& EntityComponentSystem::GetView()
+	const View<Components...>& EntityComponentSystem::GetView()
 	{
 		if(!myViewManager->IsRegistered<Components...>())
 		{
@@ -276,7 +283,7 @@ namespace QPEcs
 
 	inline Entity EntityComponentSystem::CreateEntity()
 	{
-		return  myEntityManager->CreateEntity();
+		return myEntityManager->CreateEntity();
 	}
 
 	inline void EntityComponentSystem::DestroyEntity(Entity aEntity)
@@ -284,6 +291,7 @@ namespace QPEcs
 		myEntityManager->DestroyEntity(aEntity);
 		myComponentManager->OnEntityDestroyed(aEntity);
 		mySystemManager->OnEntityDestroyed(aEntity);
+		myViewManager->OnEntityDestroyed(aEntity);
 	}
 
 	inline void EntityComponentSystem::NotifySystemsOfAllEntities()

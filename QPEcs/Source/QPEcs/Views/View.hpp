@@ -8,22 +8,35 @@ namespace QPEcs
 	template <class ... Components>
 	class View : public GenericView
 	{
+		static_assert(sizeof...(Components) > 0, "A view can't consist of 0 components!");
 		public:
 			virtual ~View() override = default;
 
-			std::tuple<Components&...> Get(Entity aEntity);
-			std::tuple<const Components&...> Get(Entity aEntity) const;
+			auto Get(Entity aEntity) const;
+
+			void ForEach(std::function<void(Entity, Components&...)> aFunctionToRun) const;
 	};
 
 	template <class ... Components>
-	std::tuple<Components&...> View<Components...>::Get(Entity aEntity)
+	auto View<Components...>::Get(Entity aEntity) const
 	{
-		return std::tie(myECS->GetComponent<Components>(aEntity)...);
+		if constexpr(sizeof...(Components) == 1)
+		{
+			return myECS->GetComponent<Components...>(aEntity);
+		}
+		else
+		{
+			return std::tie(myECS->GetComponent<Components>(aEntity)...);
+		}
 	}
 
 	template <class ... Components>
-	std::tuple<const Components&...> View<Components...>::Get(Entity aEntity) const 
+	void View<Components...>::ForEach(std::function<void(Entity, Components&...)> aFunctionToRun) const
 	{
-		return std::tie(myECS->GetComponent<Components>(aEntity)...);
+		for (auto entity : myEntities)
+		{
+			aFunctionToRun(entity, myECS->GetComponent<Components>(entity)...);
+		}
 	}
+
 }
