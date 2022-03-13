@@ -2,6 +2,7 @@
 #include "GenericView.hpp"
 #include "QPEcs/EntityComponentSystem.hpp"
 #include <tuple>
+#include <functional>
 
 namespace QPEcs
 {
@@ -12,13 +13,13 @@ namespace QPEcs
 		public:
 			virtual ~View() override = default;
 
-			auto Get(Entity aEntity) const;
+			decltype(auto) Get(Entity aEntity) const;
 
 			void ForEach(std::function<void(Entity, Components&...)> aFunctionToRun) const;
 	};
 
 	template <class ... Components>
-	auto View<Components...>::Get(Entity aEntity) const
+	decltype(auto) View<Components...>::Get(Entity aEntity) const
 	{
 		if constexpr(sizeof...(Components) == 1)
 		{
