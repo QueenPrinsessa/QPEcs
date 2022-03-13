@@ -4,6 +4,7 @@
 #include "ComponentManager.hpp"
 #include "SystemManager.hpp"
 #include "Views/ViewManager.hpp"
+#include <functional>
 
 namespace QPEcs
 {
