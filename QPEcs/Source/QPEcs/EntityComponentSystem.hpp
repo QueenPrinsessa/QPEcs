@@ -263,7 +263,7 @@ namespace QPEcs
 			myViewManager->RegisterView<Components...>(this);
 			NotifyViewsOfAllEntities();
 		}
-		return *myViewManager->GetView<Components...>(this);
+		return *myViewManager->GetView<Components...>();
 	}
 
 	inline EntityComponentSystem::EntityComponentSystem()

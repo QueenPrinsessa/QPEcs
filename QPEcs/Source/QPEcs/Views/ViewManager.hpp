@@ -24,7 +24,7 @@ namespace QPEcs
 		inline void OnEntitySignatureChanged(Entity aEntity, Signature aEntitySignature);
 
 		template <class ... Components>
-		inline std::shared_ptr<View<Components...>> GetView(EntityComponentSystem* aECS);
+		inline std::shared_ptr<View<Components...>> GetView();
 	private:
 		ComponentManager* myComponentManager { nullptr };
 		std::unordered_map<TypeName, std::shared_ptr<GenericView>> myViews {};
@@ -53,7 +53,7 @@ namespace QPEcs
 	}
 
 	template <class ... Components>
-	std::shared_ptr<View<Components...>> ViewManager::GetView(EntityComponentSystem* aECS)
+	std::shared_ptr<View<Components...>> ViewManager::GetView()
 	{
 		assert(myViews.contains(GetTypeName<View<Components...>>()) && "View hasn't been registered!");
 		return std::static_pointer_cast<View<Components...>>(myViews[GetTypeName<View<Components...>>()]);
