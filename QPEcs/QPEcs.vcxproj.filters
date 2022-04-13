@@ -4,6 +4,9 @@
     <Filter Include="QPEcs">
       <UniqueIdentifier>{01D2E50D-6DE6-0DBF-3668-B11EA23B0AF0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="QPEcs\Views">
+      <UniqueIdentifier>{DE90672C-4A46-E021-D33A-DAF83FEFD625}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\QPEcs.hpp" />
@@ -37,8 +40,14 @@
     <ClInclude Include="Source\QPEcs\Types.h">
       <Filter>QPEcs</Filter>
     </ClInclude>
-    <ClInclude Include="Source\QPEcs\Views\GenericView.hpp" />
-    <ClInclude Include="Source\QPEcs\Views\View.hpp" />
-    <ClInclude Include="Source\QPEcs\Views\ViewManager.hpp" />
+    <ClInclude Include="Source\QPEcs\Views\GenericView.hpp">
+      <Filter>QPEcs\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\QPEcs\Views\View.hpp">
+      <Filter>QPEcs\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\QPEcs\Views\ViewManager.hpp">
+      <Filter>QPEcs\Views</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -19,7 +19,7 @@ namespace QPEcs
 			inline void RegisterSystem(EntityComponentSystem* aECS);
 
 			template <class System>
-			inline void IsRegistered();
+			inline bool IsRegistered();
 
 			template <class System>
 			inline void SetSignature(Signature aSignature);
@@ -29,10 +29,7 @@ namespace QPEcs
 			inline void OnEntitySignatureChanged(Entity aEntity, Signature aEntitySignature);
 
 			template <class System>
-			inline std::shared_ptr<System> GetSystem();
-
-			template <class System>
-			inline std::shared_ptr<System> GetAndRegisterSystem(EntityComponentSystem* aECS);
+			inline std::shared_ptr<System> GetSystem(EntityComponentSystem* aECS);
 		private:
 			ComponentManager* myComponentManager { nullptr };
 			std::unordered_map<TypeName, std::shared_ptr<SystemBase>> mySystems {};
@@ -42,7 +39,7 @@ namespace QPEcs
 	};
 
 	template <class System>
-	inline void SystemManager::IsRegistered()
+	inline bool SystemManager::IsRegistered()
 	{
 		return mySystems.contains(GetTypeName<System>());
 	}
@@ -97,24 +94,18 @@ namespace QPEcs
 	}
 
 	template <class System>
-	inline std::shared_ptr<System> SystemManager::GetSystem()
-	{
-		static_assert(std::is_base_of_v<SystemBase, System>, "Systems need to inherit from QPEcs::SystemBase");
-		assert(mySystems.contains(GetTypeName<System>()) && "System needs to be registered before use!");
-		return std::static_pointer_cast<System>(mySystems[GetTypeName<System>()]);
-	}
-
-	template <class System>
-	inline std::shared_ptr<System> SystemManager::GetAndRegisterSystem(EntityComponentSystem* aECS)
+	inline std::shared_ptr<System> SystemManager::GetSystem(EntityComponentSystem* aECS)
 	{
 		static_assert(std::is_base_of_v<SystemBase, System>, "Systems need to inherit from QPEcs::SystemBase");
 
-		if(!mySystems.contains(GetTypeName<System>()))
+		if (!mySystems.contains(GetTypeName<System>()))
 		{
 			RegisterSystem<System>(aECS);
 		}
 
-		return GetSystem<System>();
+		assert(mySystems.contains(GetTypeName<System>()) && "System needs to be registered before use!");
+
+		return std::static_pointer_cast<System>(mySystems[GetTypeName<System>()]);
 	}
 
 	template <class System>

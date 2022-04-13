@@ -27,6 +27,7 @@ namespace QPEcs
 	void SystemBase::SetSignature()
 	{
 		assert(myComponentManager && "ComponentManager hasn't been set yet for system!");
+
 		Signature signature;
 		((signature.set(myComponentManager->GetComponentType<Components>())), ...);
 		mySignature = signature;

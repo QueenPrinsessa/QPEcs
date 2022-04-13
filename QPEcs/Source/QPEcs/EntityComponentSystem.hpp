@@ -33,19 +33,13 @@ namespace QPEcs
 		inline bool IsSystemRegistered();
 
 		template <class Component>
-		inline void RegisterComponent();
+		[[deprecated("Components are automatically registered.")]] inline void RegisterComponent();
 
 		template <class Component, typename ... Args>
-		inline void AddComponent(Entity aEntity, Args&&... aArgs);
+		inline Component& AddComponent(Entity aEntity, Args&&... aArgs);
 
 		template <class Component>
 		inline void RemoveComponent(Entity aEntity);
-
-		template <class Component>
-		inline void CopyComponent(Entity aFrom, Entity aTo);
-
-		template <class ... Components>
-		inline void CopyComponents(Entity aFrom, Entity aTo);
 
 		template <class Component>
 		inline void TryCopyComponent(Entity aFrom, Entity aTo);
@@ -63,7 +57,7 @@ namespace QPEcs
 		inline ComponentType GetComponentType();
 
 		template <class System>
-		inline void RegisterSystem(bool aNotifyOfExistingEntities = true);
+		[[deprecated("Use GetSystem instead")]] inline void RegisterSystem(bool aNotifyOfExistingEntities = true);
 
 		template <class System>
 		inline void SetSystemSignature(Signature aSignature);
@@ -75,7 +69,7 @@ namespace QPEcs
 		inline std::shared_ptr<System> GetSystem();
 
 		template <class System>
-		inline std::shared_ptr<System> GetAndRegisterSystem(bool aNotifyOfExistingEntities = true);
+		[[deprecated("Use GetSystem instead")]] inline std::shared_ptr<System> GetAndRegisterSystem([[maybe_unused]] bool aNotifyOfExistingEntities = true);
 
 		template <class ... Components>
 		inline const View<Components...>& GetView();
@@ -90,6 +84,13 @@ namespace QPEcs
 
 		void NotifySystemsOfAllEntities();
 		void NotifyViewsOfAllEntities();
+
+		template <class Component>
+		inline void CopyComponent(Entity aFrom, Entity aTo);
+
+		template <class ... Components>
+		inline void CopyComponents(Entity aFrom, Entity aTo);
+
 	};
 
 	inline void EntityComponentSystem::ForEach(std::function<void(Entity)> aFunctionToRun) const
@@ -135,8 +136,13 @@ namespace QPEcs
 	}
 
 	template <class Component, typename ... Args>
-	inline void EntityComponentSystem::AddComponent(Entity aEntity, Args&&... aArgs)
+	inline Component& EntityComponentSystem::AddComponent(Entity aEntity, Args&&... aArgs)
 	{
+		if (!myComponentManager->IsRegistered<Component>())
+		{
+			myComponentManager->RegisterComponent<Component>();
+		}
+
 		myComponentManager->AddComponent<Component>(aEntity, std::forward<Args>(aArgs)...);
 
 		auto signature = myEntityManager->GetSignature(aEntity);
@@ -145,32 +151,41 @@ namespace QPEcs
 
 		mySystemManager->OnEntitySignatureChanged(aEntity, signature);
 		myViewManager->OnEntitySignatureChanged(aEntity, signature);
+
+		return myComponentManager->GetComponent<Component>(aEntity);
 	}
 
 	template <class Component>
 	inline void EntityComponentSystem::RemoveComponent(Entity aEntity)
 	{
-		myComponentManager->RemoveComponent<Component>(aEntity);
+		if (myComponentManager->IsRegistered<Component>() 
+			&& HasComponent<Component>(aEntity))
+		{
+			myComponentManager->RemoveComponent<Component>(aEntity);
 
-		auto signature = myEntityManager->GetSignature(aEntity);
-		signature.reset(myComponentManager->GetComponentType<Component>());
-		myEntityManager->SetSignature(aEntity, signature);
+			auto signature = myEntityManager->GetSignature(aEntity);
+			signature.reset(myComponentManager->GetComponentType<Component>());
+			myEntityManager->SetSignature(aEntity, signature);
 
-		mySystemManager->OnEntitySignatureChanged(aEntity, signature);
-		myViewManager->OnEntitySignatureChanged(aEntity, signature);
+			mySystemManager->OnEntitySignatureChanged(aEntity, signature);
+			myViewManager->OnEntitySignatureChanged(aEntity, signature);
+		}
 	}
 
 	template <class Component>
 	void EntityComponentSystem::CopyComponent(Entity aFrom, Entity aTo)
 	{
-		myComponentManager->CopyComponent<Component>(aFrom, aTo);
+		if (myComponentManager->IsRegistered<Component>())
+		{
+			myComponentManager->CopyComponent<Component>(aFrom, aTo);
 
-		auto signature = myEntityManager->GetSignature(aTo);
-		signature.set(myComponentManager->GetComponentType<Component>());
-		myEntityManager->SetSignature(aTo, signature);
+			auto signature = myEntityManager->GetSignature(aTo);
+			signature.set(myComponentManager->GetComponentType<Component>());
+			myEntityManager->SetSignature(aTo, signature);
 
-		mySystemManager->OnEntitySignatureChanged(aTo, signature);
-		myViewManager->OnEntitySignatureChanged(aTo, signature);
+			mySystemManager->OnEntitySignatureChanged(aTo, signature);
+			myViewManager->OnEntitySignatureChanged(aTo, signature);
+		}
 	}
 
 	template <class ... Components>
@@ -207,7 +222,7 @@ namespace QPEcs
 	{
 		if(!HasComponent<Component>(aEntity))
 		{
-			AddComponent<Component>(aEntity, std::forward<Args>(aArgs)...);
+			return AddComponent<Component>(aEntity, std::forward<Args>(aArgs)...);
 		}
 
 		return GetComponent<Component>(aEntity);
@@ -247,20 +262,22 @@ namespace QPEcs
 	template <class System>
 	inline std::shared_ptr<System> EntityComponentSystem::GetSystem()
 	{
-		return mySystemManager->GetSystem<System>();
-	}
+		bool shouldNotify = !mySystemManager->IsRegistered<System>();
 
-	template <class System>
-	std::shared_ptr<System> EntityComponentSystem::GetAndRegisterSystem(bool aNotifyOfExistingEntities)
-	{
-		auto system = mySystemManager->GetAndRegisterSystem<System>(this);
+		auto system = mySystemManager->GetSystem<System>(this);
 
-		if(aNotifyOfExistingEntities)
+		if (shouldNotify)
 		{
 			NotifySystemsOfAllEntities();
 		}
 
 		return system;
+	}
+
+	template <class System>
+	std::shared_ptr<System> EntityComponentSystem::GetAndRegisterSystem(bool aNotifyOfExistingEntities)
+	{
+		return GetSystem<System>();
 	}
 
 	template <class ... Components>

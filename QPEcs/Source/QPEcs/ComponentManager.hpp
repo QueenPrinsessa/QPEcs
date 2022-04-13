@@ -63,18 +63,19 @@ namespace QPEcs
 	template <class Component>
 	void ComponentManager::RegisterComponent()
 	{
-		assert(!myComponentTypes.contains(GetTypeName<Component>()) && "Component has already been registered!");
+		if (!IsRegistered<Component>())
+		{
+			assert(!myComponentTypes.contains(GetTypeName<Component>()) && "Component has already been registered!");
 
-		myComponentTypes[GetTypeName<Component>()] = myNextComponentType++;
-		myComponentRegistries[GetTypeName<Component>()] = std::make_shared<ComponentRegistry<Component>>();
-
+			myComponentTypes[GetTypeName<Component>()] = myNextComponentType++;
+			myComponentRegistries[GetTypeName<Component>()] = std::make_shared<ComponentRegistry<Component>>();
+		}
 	}
 
 	template <class Component>
 	ComponentType ComponentManager::GetComponentType()
 	{
-		assert(myComponentTypes.contains(GetTypeName<Component>()) && "You need to register components before using them!");
-
+		RegisterComponent<Component>();
 		return myComponentTypes[GetTypeName<Component>()];
 	}
 

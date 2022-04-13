@@ -25,7 +25,7 @@ namespace QPEcs
 			virtual void OnEntityDestroyed(Entity aEntity) override;
 
 		private:
-			std::array<Component*, MaxEntities> myComponents {};
+			std::array<Component, MaxEntities> myComponents {};
 			std::unordered_map<Entity, UInt64> myEntityToIndexMap {};
 			std::unordered_map<UInt64, Entity> myIndexToEntityMap {};
 
@@ -35,20 +35,11 @@ namespace QPEcs
 	template <typename Component>
 	ComponentRegistry<Component>::ComponentRegistry()
 	{
-		for (auto component : myComponents)
-		{
-			component = nullptr;
-		}
 	}
 
 	template <typename Component>
 	ComponentRegistry<Component>::~ComponentRegistry()
 	{
-		for (auto component : myComponents)
-		{
-			delete component;
-			component = nullptr;
-		}
 	}
 
 	template <typename Component>
@@ -60,7 +51,7 @@ namespace QPEcs
 		UInt64 index = mySize++;
 		myEntityToIndexMap[aEntity] = index;
 		myIndexToEntityMap[index] = aEntity;
-		myComponents[index] = new Component(std::forward<Args>(aArgs)...);
+		myComponents[index] = Component(std::forward<Args>(aArgs)...);
 	}
 
 	template <typename Component>
@@ -71,9 +62,7 @@ namespace QPEcs
 		UInt64 removedEntityIndex = myEntityToIndexMap[aEntity];
 		UInt64 lastIndex = --mySize;
 
-		delete myComponents[removedEntityIndex];
 		myComponents[removedEntityIndex] = myComponents[lastIndex];
-		myComponents[lastIndex] = nullptr;
 
 		Entity lastEntity = myIndexToEntityMap[lastIndex];
 		myEntityToIndexMap[lastEntity] = removedEntityIndex;
@@ -93,14 +82,14 @@ namespace QPEcs
 		UInt64 index = mySize++;
 		myEntityToIndexMap[aTo] = index;
 		myIndexToEntityMap[index] = aTo;
-		myComponents[index] = new Component(componentToCopy);
+		myComponents[index] = Component(componentToCopy);
 	}
 
 	template <typename Component>
 	Component& ComponentRegistry<Component>::GetComponent(Entity aEntity)
 	{
 		assert(myEntityToIndexMap.contains(aEntity) && "Entity does not have component");
-		return *myComponents[myEntityToIndexMap[aEntity]];
+		return myComponents[myEntityToIndexMap[aEntity]];
 	}
 
 	template <typename Component>
