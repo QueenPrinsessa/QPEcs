@@ -26,10 +26,10 @@ namespace QPEcs
 
 		private:
 			std::array<Component, MaxEntities> myComponents {};
-			std::unordered_map<Entity, UInt64> myEntityToIndexMap {};
-			std::unordered_map<UInt64, Entity> myIndexToEntityMap {};
+			std::unordered_map<Entity, uint64_t> myEntityToIndexMap {};
+			std::unordered_map<uint64_t, Entity> myIndexToEntityMap {};
 
-			UInt64 mySize {};
+			uint64_t mySize {};
 	};
 
 	template <typename Component>
@@ -48,7 +48,7 @@ namespace QPEcs
 	{
 		assert(!myEntityToIndexMap.contains(aEntity) && "Entity already has component");
 
-		UInt64 index = mySize++;
+		uint64_t index = mySize++;
 		myEntityToIndexMap[aEntity] = index;
 		myIndexToEntityMap[index] = aEntity;
 		myComponents[index] = Component(std::forward<Args>(aArgs)...);
@@ -59,8 +59,8 @@ namespace QPEcs
 	{
 		assert(myEntityToIndexMap.contains(aEntity) && "Removing component which doesn't exist!");
 
-		UInt64 removedEntityIndex = myEntityToIndexMap[aEntity];
-		UInt64 lastIndex = --mySize;
+		uint64_t removedEntityIndex = myEntityToIndexMap[aEntity];
+		uint64_t lastIndex = --mySize;
 
 		myComponents[removedEntityIndex] = myComponents[lastIndex];
 
@@ -79,7 +79,7 @@ namespace QPEcs
 		assert(!myEntityToIndexMap.contains(aTo) && "The entity to copy to already has component");
 		Component& componentToCopy = GetComponent(aFrom);
 
-		UInt64 index = mySize++;
+		uint64_t index = mySize++;
 		myEntityToIndexMap[aTo] = index;
 		myIndexToEntityMap[index] = aTo;
 		myComponents[index] = Component(componentToCopy);

@@ -32,9 +32,6 @@ namespace QPEcs
 		template <class System>
 		inline bool IsSystemRegistered();
 
-		template <class Component>
-		[[deprecated("Components are automatically registered.")]] inline void RegisterComponent();
-
 		template <class Component, typename ... Args>
 		inline Component& AddComponent(Entity aEntity, Args&&... aArgs);
 
@@ -57,9 +54,6 @@ namespace QPEcs
 		inline ComponentType GetComponentType();
 
 		template <class System>
-		[[deprecated("Use GetSystem instead")]] inline void RegisterSystem(bool aNotifyOfExistingEntities = true);
-
-		template <class System>
 		inline void SetSystemSignature(Signature aSignature);
 
 		template <class System, class... Components>
@@ -67,9 +61,6 @@ namespace QPEcs
 
 		template <class System>
 		inline std::shared_ptr<System> GetSystem();
-
-		template <class System>
-		[[deprecated("Use GetSystem instead")]] inline std::shared_ptr<System> GetAndRegisterSystem([[maybe_unused]] bool aNotifyOfExistingEntities = true);
 
 		template <class ... Components>
 		inline const View<Components...>& GetView();
@@ -127,12 +118,6 @@ namespace QPEcs
 		Signature componentSignature;
 		componentSignature.set(myComponentManager->GetComponentType<Component>());
 		return (myEntityManager->GetSignature(aEntity) & componentSignature) == componentSignature;
-	}
-
-	template <class Component>
-	inline void EntityComponentSystem::RegisterComponent()
-	{
-		myComponentManager->RegisterComponent<Component>();
 	}
 
 	template <class Component, typename ... Args>
@@ -235,17 +220,6 @@ namespace QPEcs
 	}
 
 	template <class System>
-	inline void EntityComponentSystem::RegisterSystem(bool aNotifyOfExistingEntities)
-	{
-		mySystemManager->RegisterSystem<System>(this);
-
-		if (aNotifyOfExistingEntities)
-		{
-			NotifySystemsOfAllEntities();
-		}
-	}
-
-	template <class System>
 	inline void EntityComponentSystem::SetSystemSignature(Signature aSignature)
 	{
 		mySystemManager->SetSignature<System>(aSignature);
@@ -272,12 +246,6 @@ namespace QPEcs
 		}
 
 		return system;
-	}
-
-	template <class System>
-	std::shared_ptr<System> EntityComponentSystem::GetAndRegisterSystem(bool aNotifyOfExistingEntities)
-	{
-		return GetSystem<System>();
 	}
 
 	template <class ... Components>
