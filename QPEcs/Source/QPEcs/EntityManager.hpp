@@ -33,6 +33,11 @@ namespace QPEcs
 
 	inline bool EntityManager::IsValid(Entity aEntity) const
 	{
+		if(aEntity >= QPEcs::MaxEntities)
+		{
+			return false;
+		}
+
 		return myEntities[aEntity];
 	}
 
