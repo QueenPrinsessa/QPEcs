@@ -72,7 +72,7 @@ namespace QPEcs
 
 	inline void ViewManager::OnEntityDestroyed(Entity aEntity)
 	{
-		for (const auto& [typeName, view] : myViews)
+		for (auto& [typeName, view] : myViews)
 		{
 			view->myEntities.erase(aEntity);
 		}
