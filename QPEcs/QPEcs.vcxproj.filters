@@ -31,12 +31,6 @@
     <ClInclude Include="Source\QPEcs\EntityManager.hpp">
       <Filter>QPEcs</Filter>
     </ClInclude>
-    <ClInclude Include="Source\QPEcs\SystemBase.h">
-      <Filter>QPEcs</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\QPEcs\SystemManager.hpp">
-      <Filter>QPEcs</Filter>
-    </ClInclude>
     <ClInclude Include="Source\QPEcs\Types.h">
       <Filter>QPEcs</Filter>
     </ClInclude>

@@ -27,7 +27,7 @@ namespace QPEcs
 		private:
 			std::bitset<MaxEntities> myEntities {};
 			std::array<Signature, MaxEntities> mySignatures {};
-			UInt32 myEntitiesCount {};
+			uint32_t myEntitiesCount {};
 			
 	};
 
