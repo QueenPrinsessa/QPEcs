@@ -12,9 +12,9 @@ namespace QPEcs
 
 			SizeType Search(SizeType aValue);
 			void Insert(SizeType aValue);
-			void Delete(SizeType aValue);
+			void Erase(SizeType aValue);
 
-			bool Contains(SizeType aValue) const;
+			bool Contains(SizeType aValue);
 
 			void Clear();
 
@@ -86,7 +86,7 @@ namespace QPEcs
 	}
 
 	template <typename SizeType>
-	void SparseSet<SizeType>::Delete(SizeType aValue)
+	void SparseSet<SizeType>::Erase(SizeType aValue)
 	{
 		if(Search(aValue) == -1)
 		{
@@ -101,7 +101,7 @@ namespace QPEcs
 	}
 
 	template <typename SizeType>
-	bool SparseSet<SizeType>::Contains(SizeType aValue) const
+	bool SparseSet<SizeType>::Contains(SizeType aValue)
 	{
 		return Search(aValue) != -1;
 	}

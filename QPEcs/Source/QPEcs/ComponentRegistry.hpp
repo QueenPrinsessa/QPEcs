@@ -24,7 +24,7 @@ namespace QPEcs
 
 		private:
 			std::array<Component, MaxEntities> myComponents {};
-			SparseSet<int64_t> myEntityIndexSet { std::numeric_limits<EntityType>::max(), MaxEntities };
+			SparseSet<int64_t> myEntityIndexSet { MaxEntities, MaxEntities };
 			/*std::unordered_map<Entity, uint32_t> myEntityToIndexMap {};
 			std::unordered_map<uint32_t, Entity> myIndexToEntityMap {};
 
