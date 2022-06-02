@@ -31,8 +31,8 @@ namespace QPEcs
 	template <typename SizeType>
 	SparseSet<SizeType>::SparseSet(SizeType aMaxValue, SizeType aMaxCapacity)
 	{
-		mySparseArray = new SizeType[aMaxValue + 1];
-		myDenseArray = new SizeType[aMaxCapacity];
+		mySparseArray = new SizeType[aMaxValue + 1] { -1 };
+		myDenseArray = new SizeType[aMaxCapacity] { -1 };
 		mySize = 0;
 		myDenseArrayCapacity = aMaxCapacity;
 		myMaxValue = aMaxValue;
