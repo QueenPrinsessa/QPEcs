@@ -43,5 +43,6 @@
     <ClInclude Include="Source\QPEcs\Views\ViewManager.hpp">
       <Filter>QPEcs\Views</Filter>
     </ClInclude>
+    <ClInclude Include="Source\QPEcs\Structures\SparseSet.hpp" />
   </ItemGroup>
 </Project>
