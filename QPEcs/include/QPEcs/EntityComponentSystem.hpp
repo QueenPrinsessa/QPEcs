@@ -12,68 +12,67 @@ namespace QPEcs
 
 	class EntityComponentSystem
 	{
-	public:
-		EntityComponentSystem();
-		~EntityComponentSystem() = default;
+		public:
+			EntityComponentSystem();
+			~EntityComponentSystem() = default;
 
-		inline Entity CreateEntity();
+			inline Entity CreateEntity();
 
-		inline void DestroyEntity(Entity aEntity);
+			inline void DestroyEntity(Entity aEntity);
 
-		bool IsValidEntity(Entity aEntity) const;
+			bool IsValidEntity(Entity aEntity) const;
 
-		template <class Component>
-		inline bool HasComponent(Entity aEntity);
+			template <class Component>
+			inline bool HasComponent(Entity aEntity);
 
-		template <class Component>
-		inline bool IsComponentRegistered();
+			template <class Component>
+			inline bool IsComponentRegistered();
 
-		template <class Component, typename ... Args>
-		inline Component& AddComponent(Entity aEntity, Args&&... aArgs);
+			template <class Component, typename ... Args>
+			inline Component& AddComponent(Entity aEntity, Args&&... aArgs);
 
-		template <class Component>
-		inline void RemoveComponent(Entity aEntity);
+			template <class Component>
+			inline void RemoveComponent(Entity aEntity);
 
-		template <class Component>
-		inline void TryCopyComponent(Entity aFrom, Entity aTo);
+			template <class Component>
+			inline void TryCopyComponent(Entity aFrom, Entity aTo);
 
-		template <class ... Components>
-		inline void TryCopyComponents(Entity aFrom, Entity aTo);
+			template <class ... Components>
+			inline void TryCopyComponents(Entity aFrom, Entity aTo);
 
-		template <class Component>
-		inline Component& GetComponent(Entity aEntity);
+			template <class Component>
+			inline Component& GetComponent(Entity aEntity);
 
-		template <class Component, typename ... Args>
-		inline Component& GetOrAddComponent(Entity aEntity, Args&&... aArgs);
+			template <class Component, typename ... Args>
+			inline Component& GetOrAddComponent(Entity aEntity, Args&&... aArgs);
 
-		template <class Component>
-		inline ComponentType GetComponentType();
+			template <class Component>
+			inline ComponentType GetComponentType();
 
-		template <class ... Components>
-		inline const View<Components...>& GetView();
+			template <class ... Components>
+			inline const View<Components...>& GetView();
 
-		inline void ForEach(std::function<void(Entity)> aFunctionToRun) const;
+			inline void ForEach(std::function<void(Entity)> aFunctionToRun) const;
 
-	private:
-		std::unique_ptr<EntityManager> myEntityManager;
-		std::unique_ptr<ComponentManager> myComponentManager;
-		std::unique_ptr<ViewManager> myViewManager;
+		private:
+			std::unique_ptr<EntityManager> myEntityManager;
+			std::unique_ptr<ComponentManager> myComponentManager;
+			std::unique_ptr<ViewManager> myViewManager;
 
-		void NotifyViewsOfAllEntities();
+			void NotifyViewsOfAllEntities();
 
-		template <class Component>
-		inline void CopyComponent(Entity aFrom, Entity aTo);
+			template <class Component>
+			inline void CopyComponent(Entity aFrom, Entity aTo);
 
-		template <class ... Components>
-		inline void CopyComponents(Entity aFrom, Entity aTo);
-
+			template <class ... Components>
+			inline void CopyComponents(Entity aFrom, Entity aTo);
 	};
 
 	inline void EntityComponentSystem::ForEach(std::function<void(Entity)> aFunctionToRun) const
 	{
 		for (EntityType entity = 0; entity < MaxEntities; entity++)
 		{
-			if(IsValidEntity(entity))
+			if (IsValidEntity(entity))
 			{
 				aFunctionToRun(entity);
 			}
@@ -102,10 +101,7 @@ namespace QPEcs
 	template <class Component, typename ... Args>
 	inline Component& EntityComponentSystem::AddComponent(Entity aEntity, Args&&... aArgs)
 	{
-		if (!myComponentManager->IsRegistered<Component>())
-		{
-			myComponentManager->RegisterComponent<Component>();
-		}
+		myComponentManager->RegisterComponent<Component>();
 
 		myComponentManager->AddComponent<Component>(aEntity, std::forward<Args>(aArgs)...);
 
@@ -121,7 +117,7 @@ namespace QPEcs
 	template <class Component>
 	inline void EntityComponentSystem::RemoveComponent(Entity aEntity)
 	{
-		if (myComponentManager->IsRegistered<Component>() 
+		if (myComponentManager->IsRegistered<Component>()
 			&& HasComponent<Component>(aEntity))
 		{
 			myComponentManager->RemoveComponent<Component>(aEntity);
@@ -158,7 +154,7 @@ namespace QPEcs
 	template <class Component>
 	void EntityComponentSystem::TryCopyComponent(Entity aFrom, Entity aTo)
 	{
-		if(!HasComponent<Component>(aFrom))
+		if (!HasComponent<Component>(aFrom))
 		{
 			return;
 		}
@@ -181,7 +177,7 @@ namespace QPEcs
 	template <class Component, typename ... Args>
 	inline Component& EntityComponentSystem::GetOrAddComponent(Entity aEntity, Args&&... aArgs)
 	{
-		if(!HasComponent<Component>(aEntity))
+		if (!HasComponent<Component>(aEntity))
 		{
 			return AddComponent<Component>(aEntity, std::forward<Args>(aArgs)...);
 		}
@@ -198,12 +194,17 @@ namespace QPEcs
 	template <class ... Components>
 	const View<Components...>& EntityComponentSystem::GetView()
 	{
-		if(!myViewManager->IsRegistered<Components...>())
+		auto viewPtr = myViewManager->GetView<Components...>();
+		if (!viewPtr)
 		{
 			myViewManager->RegisterView<Components...>(this);
 			NotifyViewsOfAllEntities();
+			return *myViewManager->GetView<Components...>();
 		}
-		return *myViewManager->GetView<Components...>();
+		else
+		{
+			return *viewPtr;
+		}
 	}
 
 	inline EntityComponentSystem::EntityComponentSystem()
@@ -220,9 +221,12 @@ namespace QPEcs
 
 	inline void EntityComponentSystem::DestroyEntity(Entity aEntity)
 	{
-		myEntityManager->DestroyEntity(aEntity);
-		myComponentManager->OnEntityDestroyed(aEntity);
-		myViewManager->OnEntityDestroyed(aEntity);
+		if (IsValidEntity(aEntity))
+		{
+			myEntityManager->DestroyEntity(aEntity);
+			myComponentManager->OnEntityDestroyed(aEntity);
+			myViewManager->OnEntityDestroyed(aEntity);
+		}
 	}
 
 	inline void EntityComponentSystem::NotifyViewsOfAllEntities()

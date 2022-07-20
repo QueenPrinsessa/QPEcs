@@ -48,46 +48,58 @@ namespace QPEcs
 
 	inline Entity EntityManager::CreateEntity()
 	{
-		assert(myEntitiesCount < MaxEntities && "Number of entities exceeding max entities!");
-
-		Entity entity = 0;
-		for (EntityType nextEntity = 0; nextEntity < MaxEntities; nextEntity++)
+		if(myEntitiesCount < MaxEntities)
 		{
-			if(!myEntities[nextEntity])
+			Entity entity = 0;
+			for (EntityType nextEntity = 0; nextEntity < MaxEntities; nextEntity++)
 			{
-				entity = nextEntity;
-				break;
+				if(!myEntities[nextEntity])
+				{
+					entity = nextEntity;
+					break;
+				}
 			}
+
+			myEntities.set(entity);
+			myEntitiesCount++;
+			return entity;
 		}
-
-		myEntities.set(entity);
-		myEntitiesCount++;
-
-		return entity;
+		else
+		{
+			assert(false && "Number of entities exceeding max entities!");
+			return QPEcs::NullEntity;
+		}
 	}
 
 	inline void EntityManager::DestroyEntity(Entity aEntity)
 	{
-		assert(aEntity < MaxEntities && "Attempting to destroy entity out of range!");
+		if(aEntity < MaxEntities)
+		{
+			myEntities.reset(aEntity);
+			mySignatures[aEntity].reset();
 
-		myEntities.reset(aEntity);
-		mySignatures[aEntity].reset();
-
-		myEntitiesCount--;
+			myEntitiesCount--;
+		}
 	}
 
 	inline void EntityManager::SetSignature(Entity aEntity, Signature aSignature)
 	{
-		assert(aEntity < MaxEntities && "Attempting to set signature for an entity out of range!");
-
-		mySignatures[aEntity] = aSignature;
+		if(aEntity < MaxEntities)
+		{
+			mySignatures[aEntity] = aSignature;
+		}
 	}
 
 	inline Signature EntityManager::GetSignature(Entity aEntity) const
 	{
-		assert(aEntity < MaxEntities && "Attempting to get signature for an entity out of range!");
-
-		return mySignatures[aEntity];
+		if(aEntity < MaxEntities)
+		{
+			return mySignatures[aEntity];
+		}
+		else
+		{
+			return Signature {};
+		}
 	}
 
 }

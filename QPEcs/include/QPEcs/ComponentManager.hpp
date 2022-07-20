@@ -11,6 +11,8 @@ namespace QPEcs
 	{
 		using TypeName = const char*;
 		public:
+			~ComponentManager();
+
 			template <class Component>
 			void RegisterComponent();
 
@@ -36,20 +38,29 @@ namespace QPEcs
 
 		private:
 			std::unordered_map<TypeName, ComponentType> myComponentTypes {};
-			std::unordered_map<TypeName, std::shared_ptr<ComponentRegistryBase>> myComponentRegistries {};
+			std::unordered_map<TypeName, ComponentRegistryBase*> myComponentRegistries {};
 			ComponentType myNextComponentType{};
 
 			template <class Component>
-			std::shared_ptr<ComponentRegistry<Component>> GetComponentRegistry();
+			ComponentRegistry<Component>* GetComponentRegistry();
 
 			template <class Component>
-			TypeName GetTypeName();
+			constexpr TypeName GetTypeName();
 	};
+
+	inline ComponentManager::~ComponentManager()
+	{
+		for(auto& [type, registryPtr] : myComponentRegistries)
+		{
+			delete registryPtr;
+			registryPtr = nullptr;
+		}
+	}
 
 	template <class Component>
 	inline bool ComponentManager::IsRegistered()
 	{
-		return myComponentTypes.contains(GetTypeName<Component>());
+		return myComponentTypes.find(GetTypeName<Component>()) != myComponentTypes.end();
 	}
 
 	inline void ComponentManager::OnEntityDestroyed(Entity aEntity)
@@ -63,12 +74,11 @@ namespace QPEcs
 	template <class Component>
 	void ComponentManager::RegisterComponent()
 	{
-		if (!IsRegistered<Component>())
+		TypeName typeName = GetTypeName<Component>();
+		if (myComponentTypes.find(typeName) == myComponentTypes.end())
 		{
-			assert(!myComponentTypes.contains(GetTypeName<Component>()) && "Component has already been registered!");
-
-			myComponentTypes[GetTypeName<Component>()] = myNextComponentType++;
-			myComponentRegistries[GetTypeName<Component>()] = std::make_shared<ComponentRegistry<Component>>();
+			myComponentTypes[typeName] = myNextComponentType++;
+			myComponentRegistries[typeName] = new ComponentRegistry<Component>();
 		}
 	}
 
@@ -101,21 +111,29 @@ namespace QPEcs
 	template <class Component>
 	void ComponentManager::CopyComponent(Entity aFrom, Entity aTo)
 	{
-		assert(myComponentTypes.contains(GetTypeName<Component>()) && "You need to register components before copying them!");
-
-		GetComponentRegistry<Component>()->CopyComponent(aFrom, aTo);
+		if(myComponentTypes.find(GetTypeName<Component>()) != myComponentTypes.end())
+		{
+			GetComponentRegistry<Component>()->CopyComponent(aFrom, aTo);
+		}
 	}
 
 	template <class Component>
-	std::shared_ptr<ComponentRegistry<Component>> ComponentManager::GetComponentRegistry()
+	ComponentRegistry<Component>* ComponentManager::GetComponentRegistry()
 	{
-		assert(myComponentTypes.contains(GetTypeName<Component>()) && "You need to register components before using them!");
+		auto it = myComponentRegistries.find(GetTypeName<Component>());
 
-		return std::static_pointer_cast<ComponentRegistry<Component>>(myComponentRegistries[GetTypeName<Component>()]);
+		if(it != myComponentRegistries.end())
+		{
+			return static_cast<ComponentRegistry<Component>*>(it->second);
+		}
+		else
+		{
+			return nullptr;
+		}
 	}
 
 	template <class Component>
-	ComponentManager::TypeName ComponentManager::GetTypeName()
+	constexpr ComponentManager::TypeName ComponentManager::GetTypeName()
 	{
 		return typeid(Component).name();
 	}

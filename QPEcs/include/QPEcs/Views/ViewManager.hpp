@@ -12,6 +12,7 @@ namespace QPEcs
 	public:
 		ViewManager() = delete;
 		explicit ViewManager(ComponentManager* aComponentManager);
+		~ViewManager();
 
 		template <class ... Components>
 		inline void RegisterView(EntityComponentSystem* aECS);
@@ -24,43 +25,63 @@ namespace QPEcs
 		inline void OnEntitySignatureChanged(Entity aEntity, Signature aEntitySignature);
 
 		template <class ... Components>
-		inline std::shared_ptr<View<Components...>> GetView();
+		inline const View<Components...>* GetView();
 	private:
 		ComponentManager* myComponentManager { nullptr };
-		std::unordered_map<TypeName, std::shared_ptr<GenericView>> myViews {};
+		std::unordered_map<TypeName, GenericView*> myViews {};
 		std::unordered_map<TypeName, Signature> myViewSignatures {};
 
 		template <class ... Components>
-		inline TypeName GetTypeName();
+		inline constexpr TypeName GetTypeName();
 	};
+
+	inline ViewManager::~ViewManager()
+	{
+		for(auto& [typeName, viewPtr] : myViews)
+		{
+			delete viewPtr;
+			viewPtr = nullptr;
+		}
+	}
 
 	template <class ... Components>
 	void ViewManager::RegisterView(EntityComponentSystem* aECS)
 	{
-		assert(!myViews.contains(GetTypeName<View<Components...>>()) && "View has already been registered!");
-		myViews[GetTypeName<View<Components...>>()] = std::make_shared<View<Components...>>();
-		myViews[GetTypeName<View<Components...>>()]->myECS = aECS;
+		TypeName typeName = GetTypeName<View<Components...>>();
+		auto it = myViews.find(typeName);
+		if(it == myViews.end())
+		{
+			myViews[typeName] = new View<Components...>();
+			myViews[typeName]->myECS = aECS;
 
-		Signature signature;
-		((signature.set(myComponentManager->GetComponentType<Components>())), ...);
-		myViewSignatures[GetTypeName<View<Components...>>()] = signature;
+			Signature signature;
+			((signature.set(myComponentManager->GetComponentType<Components>())), ...);
+			myViewSignatures[typeName] = signature;
+		}
 	}
 
 	template <class ... Components>
 	bool ViewManager::IsRegistered()
 	{
-		return myViews.contains(GetTypeName<View<Components...>>());
+		return myViews.find(GetTypeName<View<Components...>>()) != myViews.end();
 	}
 
 	template <class ... Components>
-	std::shared_ptr<View<Components...>> ViewManager::GetView()
+	const View<Components...>* ViewManager::GetView()
 	{
-		assert(myViews.contains(GetTypeName<View<Components...>>()) && "View hasn't been registered!");
-		return std::static_pointer_cast<View<Components...>>(myViews[GetTypeName<View<Components...>>()]);
+		auto it = myViews.find(GetTypeName<View<Components...>>());
+		if(it != myViews.end())
+		{
+			return static_cast<View<Components...>*>(it->second);
+		}
+		else
+		{
+			return nullptr;
+		}
 	}
 
 	template <class ... Components>
-	ViewManager::TypeName ViewManager::GetTypeName()
+	constexpr ViewManager::TypeName ViewManager::GetTypeName()
 	{
 		return typeid(View<Components...>).name();
 	}

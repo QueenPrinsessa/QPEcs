@@ -25,10 +25,6 @@ namespace QPEcs
 		private:
 			std::array<Component, MaxEntities> myComponents {};
 			SparseSet<int64_t> myEntityIndexSet { MaxEntities, MaxEntities };
-			/*std::unordered_map<Entity, uint32_t> myEntityToIndexMap {};
-			std::unordered_map<uint32_t, Entity> myIndexToEntityMap {};
-
-			uint32_t mySize {};*/
 	};
 
 	template <typename Component>
@@ -45,19 +41,18 @@ namespace QPEcs
 	template <typename ... Args>
 	void ComponentRegistry<Component>::AddComponent(Entity aEntity, Args&&... aArgs)
 	{
-		assert(!myEntityIndexSet.Contains(aEntity) && "Entity already has component");
+		if(!myEntityIndexSet.Contains(aEntity))
+		{
+			myEntityIndexSet.Insert(aEntity);
 
-		myEntityIndexSet.Insert(aEntity);
-
-		uint32_t index = myEntityIndexSet.Search(aEntity);
-		myComponents[index] = Component(std::forward<Args>(aArgs)...);
+			uint32_t index = myEntityIndexSet.Search(aEntity);
+			myComponents[index] = Component(std::forward<Args>(aArgs)...);
+		}
 	}
 
 	template <typename Component>
 	void ComponentRegistry<Component>::RemoveComponent(Entity aEntity)
 	{
-		assert(myEntityIndexSet.Contains(aEntity) && "Removing component which doesn't exist!");
-
 		if(myEntityIndexSet.Contains(aEntity))
 		{
 			uint32_t removedEntityIndex = myEntityIndexSet.Search(aEntity);
@@ -69,7 +64,7 @@ namespace QPEcs
 	template <typename Component>
 	Component& ComponentRegistry<Component>::GetComponent(Entity aEntity)
 	{
-		assert(myEntityIndexSet.Contains(aEntity) && "Entity does not have component");
+		assert(myEntityIndexSet.Contains(aEntity) && "Entity does not have component.");
 		return myComponents[myEntityIndexSet.Search(aEntity)];
 	}
 
